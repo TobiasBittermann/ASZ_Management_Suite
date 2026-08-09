@@ -3,10 +3,12 @@ package de.tobi.asz_inventory_api.inventoryEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
 
+@Service
 public class InventoryEntryService {
     private final InventoryEntryCsvRepository repository;
     private final String filePath;
@@ -40,6 +42,23 @@ public class InventoryEntryService {
         log.info("InventoryEntryService added entry with id {}.", entry.getId());
     }
 
+    public void updateInventoryEntry(long id, InventoryEntry entry) throws IOException{
+        List<InventoryEntry> entries = repository.getAllInventoryEntries(filePath);
+
+        entry.setId(id);
+
+        repository.updateInventoryEntry(entries, entry);
+        repository.saveInventoryItem(filePath, entries);
+
+        log.info("InventoryEntryService updated entry with id {}", entry.getId());
+    }
+
+    public void deleteInventoryEntry(long id) throws IOException{
+        List<InventoryEntry> entries = repository.getAllInventoryEntries(filePath);
+
+        repository.deleteInventoryEntry(entries, id);
+        repository.saveInventoryItem(filePath, entries);
+    }
 
 }
 
