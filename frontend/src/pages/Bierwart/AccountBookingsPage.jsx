@@ -3,7 +3,7 @@ import {FiEdit3, FiPlusCircle, FiTrash2} from "react-icons/fi";
 import {Tooltip} from "react-tooltip";
 import AccountBookingAddEdit from "../../components/bierwart/AccountBookingAddEdit.jsx";
 import {loadAccountBookings, loadAccountTypes, loadVendors} from "../../utils/loadUtils.jsx";
-import {deleteEntity, saveEntity} from "../../utils/crudUtils.js";
+import {deleteEntity, saveEntity} from "../../utils/crudUtils.jsx";
 import {getAccountTypeLable, getVendorName} from "../../utils/namingUtils.jsx";
 
 function AccountBookingsPage() {

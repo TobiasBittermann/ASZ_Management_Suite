@@ -30,7 +30,7 @@ public class InventoryEntryService {
         List<InventoryEntry> entries = repository.getAllInventoryEntries(filePath);
 
         long nextId = entries.stream()
-                .mapToLong(InventoryEntry::getDrinkId)
+                .mapToLong(InventoryEntry::getId)
                 .max()
                 .orElse(0) + 1;
 

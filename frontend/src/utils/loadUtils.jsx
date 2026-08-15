@@ -53,7 +53,7 @@ export async function loadAccountBookings(setAccountBookings) {
     setAccountBookings(data);
 }
 
-export     async function loadVendors(setVendors) {
+export async function loadVendors(setVendors) {
     const response = await fetch("/vendors")
 
     if (!response.ok) {
@@ -64,7 +64,7 @@ export     async function loadVendors(setVendors) {
     setVendors(data);
 }
 
-export     async function loadBwBookings(setBwBookings) {
+export async function loadBwBookings(setBwBookings) {
     const response = await fetch("/bwbookings");
 
     if (!response.ok) {
@@ -75,7 +75,7 @@ export     async function loadBwBookings(setBwBookings) {
     setBwBookings(data);
 }
 
-export     async function loadSnapshots(setSnapshots) {
+export async function loadSnapshots(setSnapshots) {
     const response = await fetch("/bwsnapshots");
 
     if (!response.ok) {
@@ -84,4 +84,26 @@ export     async function loadSnapshots(setSnapshots) {
 
     const data = await response.json();
     setSnapshots(data)
+}
+
+export async function loadInventoryEntries(setInventoryEntries){
+    const response = await fetch("/inventoryentries")
+
+    if (!response.ok){
+        throw new Error("Loading inventory entries failed")
+    }
+
+    const data = await response.json();
+    setInventoryEntries(data);
+}
+
+export async function loadInventories(setInventories){
+    const response = await fetch ("/inventories")
+
+    if(!response.ok){
+        throw new Error("Loading inventories failed")
+    }
+
+    const data = await response.json();
+    setInventories(data);
 }

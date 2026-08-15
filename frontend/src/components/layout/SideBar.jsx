@@ -74,6 +74,11 @@ function Sidebar() {
                               className={"block px-3 py-2 rounded-lg hover:bg-green-700 transition"}>
                             Lieferanten
                         </Link>
+
+                        <Link to={"/bierwart/inventories"}
+                              className={"block px-3 py-2 rounded-lg hover:bg-green-700 transition"}>
+                            Inventur
+                        </Link>
                     </div>
 
                 }

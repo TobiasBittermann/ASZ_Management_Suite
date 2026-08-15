@@ -29,7 +29,7 @@ public class InventoryCsvRepository {
         return header.toString();
     }
 
-    public List<Inventory> getAlLInventories(String filePath) throws IOException {
+    public List<Inventory> getAllInventories(String filePath) throws IOException {
         if (filePath == null || filePath.isBlank()) {
             throw new IllegalArgumentException("CSV file path must not be blank");
         }
@@ -69,7 +69,8 @@ public class InventoryCsvRepository {
                 inventory.setId(Long.parseLong(values[0]));
                 inventory.setDate(LocalDateTime.parse(values[1]));
                 inventory.setMemberId(Long.parseLong(values[2]));
-                inventory.setNote((values[3]));
+                inventory.setFinished(Boolean.parseBoolean(values[3]));
+                inventory.setNote(values[4]);
 
                 inventories.add(inventory);
             }
@@ -84,7 +85,7 @@ public class InventoryCsvRepository {
     public void updateInventory(List<Inventory> inventories, Inventory updatedInventory) {
         for (Inventory inventory : inventories) {
             if (inventory.getId() == updatedInventory.getId()) {
-                inventory.updateFrom(inventory);
+                inventory.updateFrom(updatedInventory);
                 return;
             }
         }
@@ -112,9 +113,10 @@ public class InventoryCsvRepository {
         content.append(getInventoryHeader()).append(System.lineSeparator());
 
         for (Inventory inventory : inventories) {
-            content.append(inventory.getId()).append(",")
-                    .append(inventory.getDate()).append(",")
-                    .append(inventory.getMemberId()).append(",")
+            content.append(inventory.getId()).append(";")
+                    .append(inventory.getDate()).append(";")
+                    .append(inventory.getMemberId()).append(";")
+                    .append(inventory.isFinished()).append(";")
                     .append(inventory.getNote())
                     .append(System.lineSeparator());
         }

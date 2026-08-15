@@ -1,11 +1,6 @@
 import {useEffect, useState} from "react";
 import {getAccountTypeLable} from "../../utils/namingUtils.jsx";
-
-function getCurrentLokalDateTime() {
-    const now = new Date();
-    const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
-    return local.toISOString().slice(0, 16);
-}
+import {getCurrentLocalDateTime} from "../../utils/dateUtils.jsx";
 
 function AccountBookingAddEdit({booking, vendors, accountTypes, onClose, onSave}) {
     const [vendorId, setVendorId] = useState("");
@@ -28,7 +23,7 @@ function AccountBookingAddEdit({booking, vendors, accountTypes, onClose, onSave}
             setAmount("")
             setInvoiceNumber("")
             setAccountType("")
-            setDate(getCurrentLokalDateTime())
+            setDate(getCurrentLocalDateTime())
             setNote("")
         }
     }, [booking]);

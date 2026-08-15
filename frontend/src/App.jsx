@@ -10,6 +10,7 @@ import BookingsPage from "./pages/Bierwart/BookingsPage.jsx";
 import DepositsPage from "./pages/Bierwart/DepositsPage.jsx";
 import SnapshotsPage from "./pages/Bierwart/SnapshotsPage.jsx";
 import VendorsPage from "./pages/Bierwart/VendorsPage.jsx";
+import InventoryPage from "./pages/Bierwart/InventoryPage.jsx";
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
                     <Route path={"/bierwart/drinks"} element={<DrinksPage/>}/>
                     <Route path={"/bierwart/snapshots"} element={<SnapshotsPage/>}/>
                     <Route path={"/bierwart/vendors"} element={<VendorsPage/>}/>
+                    <Route path={"/bierwart/inventories"} element={<InventoryPage/>}/>
                 </Route>
             </Routes>
         </BrowserRouter>

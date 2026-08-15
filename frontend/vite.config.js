@@ -14,6 +14,7 @@ export default defineConfig({
       "/bwaccountbookings" : "http://localhost:8080",
       "/vendors" : "http://localhost:8080",
       "/inventoryitems" : "http://localhost:8080",
+      "/inventories" : "http://localhost:8080",
       "/bwsnapshots" : "http://localhost:8080",
       "/account-types" : "http://localhost:8080",
     }

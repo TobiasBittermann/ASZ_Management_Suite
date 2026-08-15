@@ -6,6 +6,7 @@ public class Inventory {
     private long id;
     private LocalDateTime date;
     private long memberId;
+    private boolean finished = false;
     private String note;
 
     public Inventory(){}
@@ -14,6 +15,7 @@ public class Inventory {
         this.id = other.id;
         this.date = other.date;
         this.memberId = other.memberId;
+        this.finished = other.finished;
         this.note = other.note;
     }
 
@@ -41,6 +43,14 @@ public class Inventory {
         this.memberId = memberId;
     }
 
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+    }
+
     public String getNote() {
         return note;
     }
@@ -53,6 +63,7 @@ public class Inventory {
         this.id = inventory.id;
         this.date = inventory.date;
         this.memberId = inventory.memberId;
+        this.finished = inventory.finished;
         this.note = inventory.note;
     }
 }

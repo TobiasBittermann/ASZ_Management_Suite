@@ -67,13 +67,14 @@ public class InventoryEntryCsvRepository {
 
                 InventoryEntry entry = new InventoryEntry();
                 entry.setId(Long.parseLong(values[0]));
-                entry.setDrinkId(Long.parseLong(values[1]));
-                entry.setInitialQuantity(Integer.parseInt(values[2]));
-                entry.setQuantity(Integer.parseInt(values[3]));
-                entry.setShrinkage(Integer.parseInt(values[4]));
-                entry.setUnitValue(new BigDecimal(values[5]));
-                entry.setTotalValue(new BigDecimal(values[6]));
-                entry.setShrinkageValue(new BigDecimal(values[7]));
+                entry.setInventoryId(Long.parseLong(values[1]));
+                entry.setDrinkId(Long.parseLong(values[2]));
+                entry.setInitialQuantity(Integer.parseInt(values[3]));
+                entry.setQuantity(values[4].equals("null") ? null : Integer.parseInt(values[4]));
+                entry.setShrinkage(values[5].equals("null") ? null : Integer.parseInt(values[5]));
+                entry.setUnitValue(new BigDecimal(values[6]));
+                entry.setTotalValue(new BigDecimal(values[7]));
+                entry.setShrinkageValue(values[8].equals("null") ? null : new BigDecimal(values[8]));
 
                 entries.add(entry);
             }
@@ -108,7 +109,7 @@ public class InventoryEntryCsvRepository {
         if (parent != null) {
             Files.createDirectories(parent);
         }
-        if(Files.notExists(path)){
+        if (Files.notExists(path)) {
             Files.createFile(path);
         }
 
@@ -117,6 +118,7 @@ public class InventoryEntryCsvRepository {
 
         for (InventoryEntry entry : entries) {
             content.append(entry.getId()).append(",")
+                    .append(entry.getInventoryId()).append(",")
                     .append(entry.getDrinkId()).append(",")
                     .append(entry.getInitialQuantity()).append(",")
                     .append(entry.getQuantity()).append(",")

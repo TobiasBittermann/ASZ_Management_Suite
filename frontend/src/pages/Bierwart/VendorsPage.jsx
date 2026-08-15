@@ -3,7 +3,7 @@ import {FiEdit3, FiPlusCircle, FiTrash2} from "react-icons/fi";
 import {Tooltip} from "react-tooltip";
 import VendorAddEdit from "../../components/bierwart/VendorAddEdit.jsx";
 import {loadVendors} from "../../utils/loadUtils.jsx";
-import {deleteEntity, saveEntity} from "../../utils/crudUtils.js";
+import {deleteEntity, saveEntity} from "../../utils/crudUtils.jsx";
 
 function VendorsPage() {
     const [vendors, setVendors] = useState([])

@@ -4,7 +4,7 @@ import {Tooltip} from "react-tooltip";
 import BwDepositAddEdit from "../../components/bierwart/BwDepositAddEdit.jsx";
 import {getAccountTypeLable, getMemberName} from "../../utils/namingUtils.jsx";
 import {loadAccountTypes, loadBwDeposits, loadMembers} from "../../utils/loadUtils.jsx";
-import {deleteEntity, saveEntity} from "../../utils/crudUtils.js";
+import {deleteEntity, saveEntity} from "../../utils/crudUtils.jsx";
 
 function BwDepositsTab() {
     const [bwDeposits, setBwDeposit] = useState([]);

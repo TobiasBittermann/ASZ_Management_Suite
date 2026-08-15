@@ -24,12 +24,12 @@ public class InventoryController {
         inventoryService.addInventory(inventory);
     }
 
-    @PutMapping("/inventories/${id}")
+    @PutMapping("/inventories/{id}")
     public void updateInventory(@PathVariable long id, @RequestBody Inventory inventory) throws IOException{
         inventoryService.updateInventory(id, inventory);
     }
 
-    @DeleteMapping("/inventories/§{id}")
+    @DeleteMapping("/inventories/{id}")
     public void deleteInventory(@PathVariable long id) throws IOException{
         inventoryService.deleteInventory(id);
     }

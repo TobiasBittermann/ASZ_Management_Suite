@@ -4,19 +4,21 @@ import java.math.BigDecimal;
 
 public class InventoryEntry {
     private long id;
+    private long inventoryId;
     private long drinkId;
     private int initialQuantity;
-    private int quantity;
-    private int shrinkage;
+    private Integer quantity;
+    private Integer shrinkage;
     private BigDecimal unitValue;
     private BigDecimal totalValue;
     private BigDecimal shrinkageValue;
 
-    public InventoryEntry() {}
+    public InventoryEntry() {
+    }
 
-    //TODO: Add inventory id
     public InventoryEntry(InventoryEntry other) {
         this.id = other.id;
+        this.inventoryId = other.inventoryId;
         this.drinkId = other.drinkId;
         this.initialQuantity = other.initialQuantity;
         this.quantity = other.quantity;
@@ -32,6 +34,14 @@ public class InventoryEntry {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getInventoryId() {
+        return inventoryId;
+    }
+
+    public void setInventoryId(long inventoryId) {
+        this.inventoryId = inventoryId;
     }
 
     public long getDrinkId() {
@@ -50,19 +60,19 @@ public class InventoryEntry {
         this.initialQuantity = initialQuantity;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
-    public int getShrinkage() {
+    public Integer getShrinkage() {
         return shrinkage;
     }
 
-    public void setShrinkage(int shrinkage) {
+    public void setShrinkage(Integer shrinkage) {
         this.shrinkage = shrinkage;
     }
 
@@ -90,8 +100,9 @@ public class InventoryEntry {
         this.shrinkageValue = shrinkageValue;
     }
 
-    public void updateFrom (InventoryEntry entry){
+    public void updateFrom(InventoryEntry entry) {
         this.id = entry.id;
+        this.inventoryId = entry.inventoryId;
         this.drinkId = entry.drinkId;
         this.initialQuantity = entry.initialQuantity;
         this.quantity = entry.quantity;

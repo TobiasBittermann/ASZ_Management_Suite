@@ -3,7 +3,7 @@ import {FiEdit3, FiPlusCircle, FiTrash2} from "react-icons/fi"
 import {Tooltip} from "react-tooltip";
 import DrinkAddEdit from "../../components/bierwart/DrinkAddEdit.jsx";
 import {loadDrinks} from "../../utils/loadUtils.jsx";
-import {deleteEntity, saveEntity} from "../../utils/crudUtils.js";
+import {deleteEntity, saveEntity} from "../../utils/crudUtils.jsx";
 
 function DrinksPage() {
     const [drinks, setDrinks] = useState([]);
