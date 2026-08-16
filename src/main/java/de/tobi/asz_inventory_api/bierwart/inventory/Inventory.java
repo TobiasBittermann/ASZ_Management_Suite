@@ -1,4 +1,4 @@
-package de.tobi.asz_inventory_api.inventory;
+package de.tobi.asz_inventory_api.bierwart.inventory;
 
 import java.time.LocalDateTime;
 

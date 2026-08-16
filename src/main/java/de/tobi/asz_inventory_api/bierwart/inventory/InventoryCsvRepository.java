@@ -1,4 +1,4 @@
-package de.tobi.asz_inventory_api.inventory;
+package de.tobi.asz_inventory_api.bierwart.inventory;
 
 import org.springframework.stereotype.Repository;
 
@@ -63,7 +63,7 @@ public class InventoryCsvRepository {
                     continue;
                 }
 
-                String[] values = line.split(";");
+                String[] values = line.split(";", -1);
 
                 Inventory inventory = new Inventory();
                 inventory.setId(Long.parseLong(values[0]));

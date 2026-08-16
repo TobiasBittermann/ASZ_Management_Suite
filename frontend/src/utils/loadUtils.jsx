@@ -93,6 +93,7 @@ export async function loadInventoryEntries(setInventoryEntries){
         throw new Error("Loading inventory entries failed")
     }
 
+
     const data = await response.json();
     setInventoryEntries(data);
 }

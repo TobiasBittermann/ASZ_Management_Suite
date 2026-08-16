@@ -1,9 +1,9 @@
-package de.tobi.asz_inventory_api.inventory;
+package de.tobi.asz_inventory_api.bierwart.inventory;
 
 import de.tobi.asz_inventory_api.bierwart.drink.Drink;
 import de.tobi.asz_inventory_api.bierwart.drink.DrinkCsvRepository;
-import de.tobi.asz_inventory_api.inventoryEntry.InventoryEntry;
-import de.tobi.asz_inventory_api.inventoryEntry.InventoryEntryCsvRepository;
+import de.tobi.asz_inventory_api.bierwart.inventoryEntry.InventoryEntry;
+import de.tobi.asz_inventory_api.bierwart.inventoryEntry.InventoryEntryCsvRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -84,8 +84,16 @@ public class InventoryService {
 
     public void updateInventory(long id, Inventory inventory) throws IOException {
         List<Inventory> inventories = repository.getAllInventories(filePath);
+        List<InventoryEntry> entries = entryRepository.getAllInventoryEntries(entryFilePath);
 
         inventory.setId(id);
+
+        List<InventoryEntry> currentEntries = entries.stream().filter(e -> e.getInventoryId() == inventory.getId()).toList();
+        boolean allCounted = currentEntries.stream().allMatch(e -> e.getQuantity() != null);
+
+        if(allCounted){
+            inventory.setFinished(true);
+        }
 
         repository.updateInventory(inventories, inventory);
         repository.saveInventory(filePath, inventories);

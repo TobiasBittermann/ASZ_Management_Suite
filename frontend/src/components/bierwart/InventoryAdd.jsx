@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {getCurrentLocalDateTime} from "../../utils/dateUtils.jsx";
 
-function InventoryAddEdit({inventory, members, onClose, onSave}) {
+function InventoryAdd({inventory, members, onClose, onSave}) {
     const [inventoryDate, setInventoryDate] = useState("");
     const [memberId, setMemberId] = useState("")
     const [finished, setFinished] = useState(false)
@@ -49,7 +49,7 @@ function InventoryAddEdit({inventory, members, onClose, onSave}) {
                     onSubmit={handleSubmit}>
 
                     <label className={"text-sm font-medium text-gray-600 justify-self-start mr-2"}>
-                        Inventurdaatum:
+                        Inventurdatum:
                     </label>
                     <input
                         className={"border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"}
@@ -107,4 +107,4 @@ function InventoryAddEdit({inventory, members, onClose, onSave}) {
     )
 }
 
-export default InventoryAddEdit;
+export default InventoryAdd;

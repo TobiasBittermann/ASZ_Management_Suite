@@ -1,23 +1,33 @@
 import {useEffect, useState} from "react";
-import {loadInventories, loadMembers} from "../../utils/loadUtils.jsx";
+import {loadInventories, loadInventoryEntries, loadMembers} from "../../utils/loadUtils.jsx";
 import {deleteEntity, saveEntity} from "../../utils/crudUtils.jsx";
 import {FiEdit3, FiPlusCircle, FiTrash2} from "react-icons/fi";
 import {Tooltip} from "react-tooltip";
-import InventoryAddEdit from "../../components/bierwart/InventoryAddEdit.jsx";
+import InventoryAdd from "../../components/bierwart/InventoryAdd.jsx";
 import {getMemberName} from "../../utils/namingUtils.jsx";
+import InventoryEdit from "../../components/bierwart/InventoryEdit.jsx";
 
 function InventoryPage() {
     const [inventories, setInventories] = useState([])
+    const [inventoryEntries, setInventoryEntries] = useState([])
     const [members, setMembers] = useState([])
     const [selectedInventory, setSelectedInventory] = useState(null)
-    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isModalAddOpen, setIsModalAddOpen] = useState(false)
+    const [isModalEditOpen, setIsModalEditOpen] = useState(false)
 
     useEffect(() => {
+        loadInventories(setInventories);
         loadMembers(setMembers);
     }, [])
 
     async function handleSaveInventory(inventory) {
         await saveEntity(inventory, "/inventories", loadInventories, setInventories);
+    }
+
+    async function handleSaveInventoryEntry(entry){
+
+        console.log("handleSaveInventoryEntry:", entry);
+        await saveEntity(entry, "/inventoryentries", loadInventoryEntries, setInventoryEntries)
     }
 
     async function handleDeleteInventory(id) {
@@ -26,16 +36,12 @@ function InventoryPage() {
 
     function handleEditClick(inventory) {
         setSelectedInventory(inventory);
-        setIsModalOpen(true);
+        setIsModalEditOpen(true);
     }
 
     function handleAddClick() {
         setSelectedInventory(null);
-        setIsModalOpen(true);
-    }
-
-    function startInventory() {
-
+        setIsModalAddOpen(true);
     }
 
     return (
@@ -54,13 +60,23 @@ function InventoryPage() {
             <Tooltip id={"add-tip"}/>
 
             {
-                isModalOpen && (
-                    <InventoryAddEdit
+                isModalAddOpen && (
+                    <InventoryAdd
                         inventory={selectedInventory}
                         members={members}
-                        onClose={() => setIsModalOpen(false)}
+                        onClose={() => setIsModalAddOpen(false)}
                         onSave={handleSaveInventory}/>
                 )}
+
+            {
+                isModalEditOpen && (
+                    <InventoryEdit
+                        inventory={selectedInventory}
+                        onClose = {() => setIsModalEditOpen(false)}
+                        onSave={handleSaveInventoryEntry}
+                    />
+                )
+            }
 
 
             <div className={"overflow-x-auto rounded-xl shadow"}>
@@ -83,7 +99,7 @@ function InventoryPage() {
                             <td className={"px-6 py-3"}>{inventory.date}</td>
                             <td className={"px-6 py-3"}>{getMemberName(members, inventory.memberId)}</td>
                             <td className={"px-6 py-3"}>{inventory.note}</td>
-                            <td className={"px-6 py-3"}>{inventory.finished}</td>
+                            <td className={"px-6 py-3"}>{inventory.finished ? "Ja" : "Nein"}</td>
                             <td>
                                 <button
                                     className={"hover:bg-green-500 hover:scale-105 bg-green-300 text-black shadow-md rounded px-3 py-1 m-1 transition"}

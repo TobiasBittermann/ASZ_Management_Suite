@@ -1,4 +1,4 @@
-package de.tobi.asz_inventory_api.inventoryEntry;
+package de.tobi.asz_inventory_api.bierwart.inventoryEntry;
 
 import org.springframework.stereotype.Repository;
 
