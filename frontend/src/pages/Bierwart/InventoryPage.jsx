@@ -6,6 +6,8 @@ import {Tooltip} from "react-tooltip";
 import InventoryAdd from "../../components/bierwart/InventoryAdd.jsx";
 import {getMemberName} from "../../utils/namingUtils.jsx";
 import InventoryEdit from "../../components/bierwart/InventoryEdit.jsx";
+import InventoryShow from "../../components/bierwart/InventoryShow.jsx";
+import {SlMagnifier} from "react-icons/sl";
 
 function InventoryPage() {
     const [inventories, setInventories] = useState([])
@@ -14,6 +16,7 @@ function InventoryPage() {
     const [selectedInventory, setSelectedInventory] = useState(null)
     const [isModalAddOpen, setIsModalAddOpen] = useState(false)
     const [isModalEditOpen, setIsModalEditOpen] = useState(false)
+    const [isModalShowOpen, setIsModalShowOpen] = useState(false)
 
     useEffect(() => {
         loadInventories(setInventories);
@@ -24,7 +27,7 @@ function InventoryPage() {
         await saveEntity(inventory, "/inventories", loadInventories, setInventories);
     }
 
-    async function handleSaveInventoryEntry(entry){
+    async function handleSaveInventoryEntry(entry) {
 
         console.log("handleSaveInventoryEntry:", entry);
         await saveEntity(entry, "/inventoryentries", loadInventoryEntries, setInventoryEntries)
@@ -42,6 +45,11 @@ function InventoryPage() {
     function handleAddClick() {
         setSelectedInventory(null);
         setIsModalAddOpen(true);
+    }
+
+    function handleShowClick(inventory){
+        setSelectedInventory(inventory);
+        setIsModalShowOpen(true);
     }
 
     return (
@@ -66,18 +74,27 @@ function InventoryPage() {
                         members={members}
                         onClose={() => setIsModalAddOpen(false)}
                         onSave={handleSaveInventory}/>
-                )}
+                )
+            }
 
             {
                 isModalEditOpen && (
                     <InventoryEdit
                         inventory={selectedInventory}
-                        onClose = {() => setIsModalEditOpen(false)}
+                        onClose={() => setIsModalEditOpen(false)}
                         onSave={handleSaveInventoryEntry}
                     />
                 )
             }
 
+            {
+                isModalShowOpen && (
+                    <InventoryShow
+                        inventory={selectedInventory}
+                        onClose={() => setIsModalShowOpen(false)}
+                    />
+                )
+            }
 
             <div className={"overflow-x-auto rounded-xl shadow"}>
 
@@ -93,7 +110,7 @@ function InventoryPage() {
                     </tr>
                     </thead>
                     <tbody className={"divide-y divide-gray-100"}>
-                    {inventories.map(inventory =>(
+                    {inventories.map(inventory => (
                         <tr key={inventory.id} className={"hover:bg-gray-50 transition"}>
                             <td className={"px-6 py-3"}>{inventory.id}</td>
                             <td className={"px-6 py-3"}>{inventory.date}</td>
@@ -105,15 +122,23 @@ function InventoryPage() {
                                     className={"hover:bg-green-500 hover:scale-105 bg-green-300 text-black shadow-md rounded px-3 py-1 m-1 transition"}
                                     data-tooltip-id={"edit-tip"}
                                     data-tooltip-content={"Edit an inventory"}
-                                    onClick={() => handleEditClick(inventory)}>
-                                    <FiEdit3 />
+                                    onClick={() => handleShowClick(inventory)}>
+                                    <SlMagnifier />
+                                </button>
+                                <button
+                                    className={"hover:bg-green-500 hover:scale-105 bg-green-300 text-black shadow-md rounded px-3 py-1 m-1 transition"}
+                                    data-tooltip-id={"edit-tip"}
+                                    data-tooltip-content={"Edit an inventory"}
+                                    onClick={() => handleEditClick(inventory)}
+                                disabled={inventory.finished}>
+                                    <FiEdit3/>
                                 </button>
                                 <button
                                     className={"hover:bg-green-500 hover:scale-105 bg-green-300 text-black shadow-md rounded px-3 py-1 m-1 transition"}
                                     data-tooltip-id={"delete-tip"}
                                     data-tooltip-content={"Delete an inventory"}
                                     onClick={() => handleDeleteInventory(inventory.id)}>
-                                    <FiTrash2 />
+                                    <FiTrash2/>
                                 </button>
                             </td>
                         </tr>

@@ -7,8 +7,8 @@ function InventoryEdit({inventory, onClose, onSave}) {
     const [drinks, setDrinks] = useState([])
 
     useEffect(() => {
-        loadInventoryEntries(setInventoryEntries)
-        loadDrinks(setDrinks)
+        loadInventoryEntries(setInventoryEntries).then()
+        loadDrinks(setDrinks).then()
     }, []);
 
     async function handleSubmit(event) {
@@ -67,7 +67,7 @@ function InventoryEdit({inventory, onClose, onSave}) {
                                                value={entry.quantity ?? ""}
                                                onChange={event => {
                                                    const value = event.target.value;
-                                                   const quantity = value == "" ? null : Number(value);
+                                                   const quantity = value === "" ? null : Number(value);
 
                                                    setInventoryEntries(entries =>
                                                        entries.map(e =>

@@ -2,7 +2,6 @@ package de.tobi.asz_inventory_api.bierwart.inventoryEntry;
 
 import de.tobi.asz_inventory_api.bierwart.inventory.Inventory;
 import de.tobi.asz_inventory_api.bierwart.inventory.InventoryCsvRepository;
-import de.tobi.asz_inventory_api.bierwart.inventory.InventoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
