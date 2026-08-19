@@ -1,7 +1,5 @@
 package de.tobi.asz_inventory_api.bierwart.inventoryEntry;
 
-import de.tobi.asz_inventory_api.bierwart.inventory.Inventory;
-import de.tobi.asz_inventory_api.bierwart.inventory.InventoryCsvRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,19 +12,13 @@ import java.util.List;
 @Service
 public class InventoryEntryService {
     private final InventoryEntryCsvRepository repository;
-    private final InventoryCsvRepository inventoryRepository;
     private final String filePath;
-    private final String inventoryFilePath;
     private static final Logger log = LoggerFactory.getLogger(InventoryEntryService.class);
 
     public InventoryEntryService(InventoryEntryCsvRepository repository,
-                                 InventoryCsvRepository inventoryRepository,
-                                 @Value("${app.inventoryentries.csv-path}") String filePath,
-                                 @Value("${app.inventories.csv-path}") String inventoryFilePath) {
+                                 @Value("${app.inventoryentries.csv-path}") String filePath) {
         this.repository = repository;
-        this.inventoryRepository = inventoryRepository;
         this.filePath = filePath;
-        this.inventoryFilePath = inventoryFilePath;
     }
 
     public List<InventoryEntry> getAllInventoryEntries() throws IOException {
@@ -57,7 +49,7 @@ public class InventoryEntryService {
 
         entry.setId(id);
         if (entry.getQuantity() != null) {
-            entry.setShrinkage(entry.getInitialQuantity() - entry.getQuantity());
+            entry.setShrinkage(entry.getQuantity() - entry.getInitialQuantity());
             entry.setShrinkageValue(entry.getUnitValue().multiply(BigDecimal.valueOf(entry.getShrinkage())));
         } else {
             entry.setShrinkage(null);
@@ -68,9 +60,6 @@ public class InventoryEntryService {
         repository.saveInventoryItem(filePath, entries);
 
         log.info("InventoryEntryService updated entry with id {}", entry.getId());
-
-        checkInventoryFinished(entries, entry);
-
     }
 
     public void deleteInventoryEntry(long id) throws IOException {
@@ -79,24 +68,6 @@ public class InventoryEntryService {
         repository.deleteInventoryEntry(entries, id);
         repository.saveInventoryItem(filePath, entries);
     }
-
-    public void checkInventoryFinished(List<InventoryEntry> entries, InventoryEntry entry)throws IOException{
-        List<Inventory> inventories = inventoryRepository.getAllInventories(inventoryFilePath);
-        Inventory inventory = inventories.stream().filter(i -> i.getId() == entry.getInventoryId()).findAny().orElseThrow();
-
-        if(!inventory.isFinished()){
-            List<InventoryEntry> currentEntries = entries.stream().filter(e -> e.getInventoryId() == entry.getInventoryId()).toList();
-            boolean allCounted = currentEntries.stream().allMatch(e -> e.getQuantity() != null);
-
-            if(allCounted){
-                inventory.setFinished(true);
-
-                inventoryRepository.updateInventory(inventories, inventory);
-                inventoryRepository.saveInventory(inventoryFilePath, inventories);
-            }
-        }
-    }
-
 }
 
 

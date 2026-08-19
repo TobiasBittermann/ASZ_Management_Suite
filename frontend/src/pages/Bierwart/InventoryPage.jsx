@@ -47,7 +47,7 @@ function InventoryPage() {
         setIsModalAddOpen(true);
     }
 
-    function handleShowClick(inventory){
+    function handleShowClick(inventory) {
         setSelectedInventory(inventory);
         setIsModalShowOpen(true);
     }
@@ -123,14 +123,14 @@ function InventoryPage() {
                                     data-tooltip-id={"edit-tip"}
                                     data-tooltip-content={"Edit an inventory"}
                                     onClick={() => handleShowClick(inventory)}>
-                                    <SlMagnifier />
+                                    <SlMagnifier/>
                                 </button>
                                 <button
-                                    className={"hover:bg-green-500 hover:scale-105 bg-green-300 text-black shadow-md rounded px-3 py-1 m-1 transition"}
+                                    className={"hover:bg-green-500 hover:scale-105 bg-green-300 disabled:bg-gray-300 disabled:text-gray-500 disabled:hover:scale-100 disabled:hover:bg-gray-300 text-black shadow-md rounded px-3 py-1 m-1 transition"}
                                     data-tooltip-id={"edit-tip"}
                                     data-tooltip-content={"Edit an inventory"}
                                     onClick={() => handleEditClick(inventory)}
-                                disabled={inventory.finished}>
+                                    disabled={inventory.finished}>
                                     <FiEdit3/>
                                 </button>
                                 <button

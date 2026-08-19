@@ -2,10 +2,10 @@ package de.tobi.asz_inventory_api.bierwart.bwBooking;
 
 import de.tobi.asz_inventory_api.bierwart.bwAccountSnapshot.BwAccountSnapshotService;
 import de.tobi.asz_inventory_api.bierwart.drink.Drink;
-import de.tobi.asz_inventory_api.bierwart.drink.DrinkCsvRepository;
+import de.tobi.asz_inventory_api.bierwart.drink.DrinkService;
 import de.tobi.asz_inventory_api.enums.AccountType;
 import de.tobi.asz_inventory_api.member.Member;
-import de.tobi.asz_inventory_api.member.MemberCsvRepository;
+import de.tobi.asz_inventory_api.member.MemberService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,28 +18,22 @@ import java.util.List;
 @Service
 public class BwBookingService {
     private final BwBookingCsvRepository repository;
-    private final MemberCsvRepository memberRepository;
-    private final DrinkCsvRepository drinkRepository;
+    private final MemberService memberService;
+    private final DrinkService drinkService;
     private final BwAccountSnapshotService snapshotService;
     private final String filePath;
-    private final String memberFilePath;
-    private final String drinkFilePath;
     private static final Logger log = LoggerFactory.getLogger(BwBookingService.class);
 
     public BwBookingService(BwBookingCsvRepository repository,
-                            MemberCsvRepository memberRepository,
-                            DrinkCsvRepository drinkRepository,
+                            MemberService memberService,
+                            DrinkService drinkService,
                             BwAccountSnapshotService snapshotService,
-                            @Value("${app.bwbookings.csv-path}") String filePath,
-                            @Value("${app.members.csv-path}") String memberFilePath,
-                            @Value("${app.drinks.csv-path}") String drinkFilePath) {
+                            @Value("${app.bwbookings.csv-path}") String filePath) {
         this.repository = repository;
-        this.memberRepository = memberRepository;
-        this.drinkRepository = drinkRepository;
+        this.memberService = memberService;
+        this.drinkService = drinkService;
         this.snapshotService = snapshotService;
         this.filePath = filePath;
-        this.memberFilePath = memberFilePath;
-        this.drinkFilePath = drinkFilePath;
     }
 
     public List<BwBooking> getAllBwBookings() throws IOException {
@@ -51,7 +45,7 @@ public class BwBookingService {
 
     public void addBwBooking(BwBooking booking) throws IOException {
         List<BwBooking> bookings = repository.getAllBwBookings(filePath);
-        List<Drink> drinks = drinkRepository.getAllDrinks(drinkFilePath);
+        List<Drink> drinks = drinkService.getAllDrinks();
 
         long nextId = bookings.stream()
                 .mapToLong(BwBooking::getId)
@@ -76,7 +70,7 @@ public class BwBookingService {
 
     public void updateBwBooking(long id, BwBooking booking) throws IOException {
         List<BwBooking> bookings = repository.getAllBwBookings(filePath);
-        List<Drink> drinks = drinkRepository.getAllDrinks(drinkFilePath);
+        List<Drink> drinks = drinkService.getAllDrinks();
 
         BwBooking oldBooking = bookings.stream().filter(b -> b.getId() == id).findAny().orElseThrow();
         BigDecimal oldCost = oldBooking.getBookingCost();
@@ -103,7 +97,7 @@ public class BwBookingService {
 
     public void deleteBwBooking(long id) throws IOException {
         List<BwBooking> bookings = repository.getAllBwBookings(filePath);
-        List<Drink> drinks = drinkRepository.getAllDrinks(drinkFilePath);
+        List<Drink> drinks = drinkService.getAllDrinks();
 
         BwBooking booking = bookings.stream().filter(b -> b.getId() == id).findAny().orElseThrow();
 
@@ -123,7 +117,7 @@ public class BwBookingService {
 
 
     private void changeBalance(BwBooking booking, boolean x) throws IOException {
-        List<Member> members = memberRepository.getAllMembers(memberFilePath);
+        List<Member> members = memberService.getAllMembers();
 
         Member member = members.stream().filter(m -> m.getId() == booking.getMemberId()).findAny().orElseThrow();
 
@@ -135,8 +129,7 @@ public class BwBookingService {
         BigDecimal oldBalance = member.getBalance();
         member.setBalance(member.getBalance().subtract(price));
 
-        memberRepository.updateMember(members, member);
-        memberRepository.saveMembers(memberFilePath, members);
+        memberService.updateMember(member.getId(), member);
 
         log.info("BwBookingService updated balance from member {} {} with id {} from {} to {}",
                 member.getFirstName(),
@@ -147,7 +140,7 @@ public class BwBookingService {
     }
 
     private void changeAmountDrinks(BwBooking booking, boolean x) throws IOException {
-        List<Drink> drinks = drinkRepository.getAllDrinks(drinkFilePath);
+        List<Drink> drinks = drinkService.getAllDrinks();
 
         Drink drink = drinks.stream().filter(d -> d.getId() == booking.getDrinkId()).findAny().orElseThrow();
 
@@ -160,8 +153,7 @@ public class BwBookingService {
         Integer oldAmount = drink.getAmount();
         drink.setAmount(drink.getAmount() - amount);
 
-        drinkRepository.updateDrink(drinks, drink);
-        drinkRepository.saveDrinks(drinkFilePath, drinks);
+        drinkService.updateDrink(drink.getId(), drink);
 
         log.info("BwBookingService updated amount drinks from drink {} with id {} from {} to {}",
                 drink.getName(),

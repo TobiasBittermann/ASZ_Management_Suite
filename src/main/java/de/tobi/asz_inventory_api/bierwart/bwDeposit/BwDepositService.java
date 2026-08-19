@@ -2,7 +2,7 @@ package de.tobi.asz_inventory_api.bierwart.bwDeposit;
 
 import de.tobi.asz_inventory_api.bierwart.bwAccountSnapshot.BwAccountSnapshotService;
 import de.tobi.asz_inventory_api.member.Member;
-import de.tobi.asz_inventory_api.member.MemberCsvRepository;
+import de.tobi.asz_inventory_api.member.MemberService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,18 +15,19 @@ import java.util.List;
 @Service
 public class BwDepositService {
     private final BwDepositCsvRepository repository;
-    private final MemberCsvRepository memberRepository;
+    private final MemberService memberService;
     private final BwAccountSnapshotService snapshotService;
     private final String filePath;
-    private final String memberFilePath;
     private static final Logger log = LoggerFactory.getLogger(BwDepositService.class);
 
-    public BwDepositService(BwDepositCsvRepository repository, MemberCsvRepository memberCsvRepository, BwAccountSnapshotService snapshotService, @Value("${app.deposits.csv-path}") String filePath, @Value("${app.members.csv-path}") String memberFilePath) {
+    public BwDepositService(BwDepositCsvRepository repository,
+                            MemberService memberService,
+                            BwAccountSnapshotService snapshotService,
+                            @Value("${app.deposits.csv-path}") String filePath) {
         this.repository = repository;
-        this.memberRepository = memberCsvRepository;
+        this.memberService = memberService;
         this.snapshotService = snapshotService;
         this.filePath = filePath;
-        this.memberFilePath = memberFilePath;
     }
 
     public List<BwDeposit> getAllBwDeposits() throws IOException {
@@ -38,7 +39,7 @@ public class BwDepositService {
 
     public void addBwDeposit(BwDeposit deposit) throws IOException {
         List<BwDeposit> deposits = repository.getAllBwDeposits(filePath);
-        List<Member> members = memberRepository.getAllMembers(memberFilePath);
+        List<Member> members = memberService.getAllMembers();
 
         long nextId = deposits.stream()
                 .mapToLong(BwDeposit::getId)
@@ -61,7 +62,7 @@ public class BwDepositService {
 
     public void updateBwDeposit(long id, BwDeposit deposit) throws IOException {
         List<BwDeposit> deposits = repository.getAllBwDeposits(filePath);
-        List<Member> members = memberRepository.getAllMembers(memberFilePath);
+        List<Member> members = memberService.getAllMembers();
 
         deposit.setId(id);
 
@@ -86,7 +87,7 @@ public class BwDepositService {
 
     public void deleteBwDeposit(long id) throws IOException {
         List<BwDeposit> deposits = repository.getAllBwDeposits(filePath);
-        List<Member> members = memberRepository.getAllMembers(memberFilePath);
+        List<Member> members = memberService.getAllMembers();
 
         BwDeposit deposit = deposits.stream().filter(d -> d.getId() == id).findAny(). orElseThrow();
 
@@ -103,7 +104,7 @@ public class BwDepositService {
     }
 
     public void changeBalance(long memberId, BigDecimal amountDeposit) throws IOException {
-        List<Member> members = memberRepository.getAllMembers(memberFilePath);
+        List<Member> members = memberService.getAllMembers();
 
         Member member = members.stream()
                 .filter(m -> m.getId() == memberId)
@@ -114,8 +115,7 @@ public class BwDepositService {
 
         member.setBalance(member.getBalance().add(amountDeposit));
 
-        memberRepository.updateMember(members, member);
-        memberRepository.saveMembers(memberFilePath, members);
+        memberService.updateMember(memberId, member);
 
         log.info("BwDepositService updated balance from member {} {} with id {} from {} to {}",
                 member.getFirstName(),

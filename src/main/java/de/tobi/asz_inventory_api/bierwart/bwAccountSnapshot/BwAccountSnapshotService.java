@@ -17,7 +17,8 @@ public class BwAccountSnapshotService {
     private final String filePath;
     private static final Logger log = LoggerFactory.getLogger(BwAccountSnapshotService.class);
 
-    public BwAccountSnapshotService(BwAccountSnapshotCsvRepository repository, @Value("${app.bwsnapshots.csv-path}") String filePath){
+    public BwAccountSnapshotService(BwAccountSnapshotCsvRepository repository,
+                                    @Value("${app.bwsnapshots.csv-path}") String filePath){
         this.repository = repository;
         this.filePath = filePath;
     }
@@ -58,8 +59,6 @@ public class BwAccountSnapshotService {
 
     public void deleteBwAccountSnapshot(long id) throws IOException{
         List<BwAccountSnapshot> snapshots = repository.getAllBwAccountSnapshots(filePath);
-
-        BwAccountSnapshot snapshot = snapshots.stream().filter(s -> s.getId() == id).findAny().orElseThrow();
 
         repository.deleteBwSnapshot(snapshots, id);
         repository.saveBwAccountSnapshot(filePath, snapshots);
