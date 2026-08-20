@@ -50,7 +50,7 @@ public class DrinkService {
 
         log.info("DrinkService added drink {} with id {}.", drink.getName(), drink.getId());
 
-        String note = String.format("Automatische Buchung: %s %s", drink.getName(), drink.getTotalValue());
+        String note = String.format("Automatische Inventarbuchung: %s %s", drink.getName(), drink.getTotalValue());
         snapshotService.addTransactionSnapshot(drink.getTotalValue(), AccountType.INVENTORY, note);
     }
 
@@ -71,7 +71,7 @@ public class DrinkService {
         log.info("DrinkService updated drink {} with id {}.", drink.getName(), drink.getId());
 
         BigDecimal valueIncrease = drink.getTotalValue().subtract(oldTotalValue);
-        String note = String.format("Automatische Inventarkorrekturbuchung: %s %s €", drink.getName(), valueIncrease);
+        String note = String.format("Automatische Inventarbuchung: %s %s €", drink.getName(), valueIncrease);
         snapshotService.addTransactionSnapshot(valueIncrease, AccountType.INVENTORY, note);
     }
 

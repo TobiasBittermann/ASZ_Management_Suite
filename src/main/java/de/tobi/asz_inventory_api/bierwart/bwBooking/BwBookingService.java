@@ -45,7 +45,6 @@ public class BwBookingService {
 
     public void addBwBooking(BwBooking booking) throws IOException {
         List<BwBooking> bookings = repository.getAllBwBookings(filePath);
-        List<Drink> drinks = drinkService.getAllDrinks();
 
         long nextId = bookings.stream()
                 .mapToLong(BwBooking::getId)
@@ -61,11 +60,6 @@ public class BwBookingService {
         changeAmountDrinks(booking, false);
 
         log.info("BwBookingService added booking with id {}", booking.getId());
-
-        Drink drink = drinks.stream().filter(d -> d.getId() == booking.getDrinkId()).findAny().orElseThrow();
-
-        String note = String.format("Automatische Inventarbuchung: %s %s", drink.getName(), booking.getBookingCost());
-        snapshotService.addTransactionSnapshot(booking.getBookingCost().negate(), AccountType.INVENTORY, note);
     }
 
     public void updateBwBooking(long id, BwBooking booking) throws IOException {
