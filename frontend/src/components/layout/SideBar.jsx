@@ -1,6 +1,7 @@
 import {useState} from "react";
 import {Link} from "react-router-dom";
 import {FiHome, FiUsers, FiChevronDown, FiUser} from "react-icons/fi";
+import {BiBeer} from "react-icons/bi";
 
 function Sidebar() {
     const [bierwartOpen, setBierwartOpen] = useState(false);
@@ -32,7 +33,7 @@ function Sidebar() {
                 className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-green-700 transition"
                 >
                     <div className="flex items-center gap-3">
-                        <FiUser/>
+                        <BiBeer />
                         <span>Bierwart</span>
                     </div>
 

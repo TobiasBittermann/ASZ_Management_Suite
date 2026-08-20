@@ -1,5 +1,0 @@
-[Desktop Entry]
-Name=ASZ Stopp
-Exec=bash -c "fuser -k 808/tcp"
-Icon=/home/tobi/repos/ASZ_Inventory/src/main/resources/static/Zirkel_ASZ.jpg
-Type=Application

@@ -1,5 +1,0 @@
-[Desktop Entry]
-Name=ASZ Start
-Exec= bash -c "java -jar /home/tobi/repos/ASZ_Inventory/target/asz-inventory-api-0.0.1-SNAPSHOT.jar & sleep 1 && xdg-open http://localhost:8080"
-Icon=/home/tobi/repos/ASZ_Inventory/src/main/resources/static/Zirkel_ASZ.jpg
-Type=Application

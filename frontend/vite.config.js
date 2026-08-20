@@ -17,6 +17,7 @@ export default defineConfig({
       "/inventories" : "http://localhost:8080",
       "/bwsnapshots" : "http://localhost:8080",
       "/account-types" : "http://localhost:8080",
+      "/reports" : "http://localhost:8080",
     }
   }
 })

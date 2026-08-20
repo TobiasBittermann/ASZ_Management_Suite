@@ -134,6 +134,14 @@ function InventoryPage() {
                                     <FiEdit3/>
                                 </button>
                                 <button
+                                    className={"hover:bg-green-500 hover:scale-105 bg-green-300 disabled:bg-gray-300 disabled:text-gray-500 disabled:hover:scale-100 disabled:hover:bg-gray-300 text-black shadow-md rounded px-3 py-1 m-1 transition"}
+                                    data-tooltip-id={"report-tip"}
+                                    data-tooltip-content={"Open the inventory report"}
+                                    onClick={() => window.open(`/reports/inventory/${inventory.id}`, "_blank")}
+                                    disabled={!inventory.finished}>
+                                    <FiEdit3/>
+                                </button>
+                                <button
                                     className={"hover:bg-green-500 hover:scale-105 bg-green-300 text-black shadow-md rounded px-3 py-1 m-1 transition"}
                                     data-tooltip-id={"delete-tip"}
                                     data-tooltip-content={"Delete an inventory"}
