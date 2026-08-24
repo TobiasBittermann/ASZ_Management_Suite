@@ -34,16 +34,20 @@ Die ASZ Management Suite ist ein Programm zum Verwalten von Mitgliedern, Inventa
 ## Technologien
 
 ### Backend
-- Java (Version)
-- Spring Boot
+- Java 17
+- Spring Boot 4.1.0
+- Maven 3.9 (Docker-Build)
 
 ### Frontend
-- React
+- React 19.2.7
+- Vite 8.1.1
+- Tailwind CSS 4.3.3
 - JavaScript
 
 ### Deployment
 - Docker
 - Docker Compose
+- Node.js 22 (Docker-Build)
 
 ## Vorassetzungen
 
@@ -68,4 +72,3 @@ Backend:
 'http://localhost:8080'
 
 ## Projektstruktur
-
