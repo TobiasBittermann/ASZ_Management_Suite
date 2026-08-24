@@ -102,7 +102,6 @@ public class InventoryReportService {
         for (InventoryEntry entry : entries) {
             Drink drink = drinkService.getAllDrinks().stream().filter(d -> d.getId() == entry.getDrinkId()).findAny().orElseThrow();
 
-
             table.addCell(String.valueOf(drink.getName()));
             table.addCell(String.valueOf(entry.getInitialQuantity()));
             table.addCell(String.valueOf(entry.getQuantity()));

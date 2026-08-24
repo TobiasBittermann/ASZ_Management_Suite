@@ -5,6 +5,7 @@ import BwBookingAddEdit from "../../components/bierwart/BwBookingAddEdit.jsx";
 import {loadBwBookings, loadDrinks, loadMembers} from "../../utils/loadUtils.jsx";
 import {deleteEntity, saveEntity} from "../../utils/crudUtils.jsx";
 import {getDrinkName, getMemberName} from "../../utils/namingUtils.jsx";
+import {FaRegFilePdf} from "react-icons/fa6";
 
 function BwBookingsTab() {
     const [bwBookings, setBwBookings] = useState([]);
@@ -12,6 +13,8 @@ function BwBookingsTab() {
     const [drinks, setDrinks] = useState([])
     const [selectedBwBooking, setSelectedBwBooking] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [dateFrom, setDateFrom] = useState("");
+    const [dateTo, setDateTo] = useState("");
 
     useEffect(() => {
         loadBwBookings(setBwBookings);
@@ -37,10 +40,14 @@ function BwBookingsTab() {
         setIsModalOpen(true);
     }
 
+    function handleOpenReport(){
+        window.open(`/reports/bookings?dateFrom=${dateFrom}&dateTo=${dateTo}`, "_blank");
+    }
+
     return (
         <div>
             <h3 className={"text-3xl font-bold text-gray-800 text-center"}>
-                Getränkebuchungen
+                Kühlschrankbuchungen
             </h3>
 
             <button
@@ -51,6 +58,28 @@ function BwBookingsTab() {
                 <FiPlusCircle/>
             </button>
             <Tooltip id={"add-tip"}/>
+
+
+            <input
+                type={"date"}
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className={"border rounded px-2 py-1"}
+            />
+            <input
+                type={"date"}
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className={"border rounded px-2 py-1"}
+            />
+            <button
+                className={"hover:bg-green-500 hover:scale-105 bg-green-300 text-black shadow-md justify-self-start rounded px-6 py-2 m-3 transition"}
+                data-tooltip-id={"report-tip"}
+                data-tooltip-content={"Get a bookings report"}
+                onClick={handleOpenReport}>
+                <FaRegFilePdf />
+            </button>
+            <Tooltip id={"report-tip"}/>
 
             {
                 isModalOpen && (

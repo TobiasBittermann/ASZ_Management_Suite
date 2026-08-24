@@ -8,6 +8,7 @@ import {getMemberName} from "../../utils/namingUtils.jsx";
 import InventoryEdit from "../../components/bierwart/InventoryEdit.jsx";
 import InventoryShow from "../../components/bierwart/InventoryShow.jsx";
 import {SlMagnifier} from "react-icons/sl";
+import {FaRegFilePdf} from "react-icons/fa6";
 
 function InventoryPage() {
     const [inventories, setInventories] = useState([])
@@ -120,8 +121,8 @@ function InventoryPage() {
                             <td>
                                 <button
                                     className={"hover:bg-green-500 hover:scale-105 bg-green-300 text-black shadow-md rounded px-3 py-1 m-1 transition"}
-                                    data-tooltip-id={"edit-tip"}
-                                    data-tooltip-content={"Edit an inventory"}
+                                    data-tooltip-id={"show-tip"}
+                                    data-tooltip-content={"Show an inventory"}
                                     onClick={() => handleShowClick(inventory)}>
                                     <SlMagnifier/>
                                 </button>
@@ -139,7 +140,7 @@ function InventoryPage() {
                                     data-tooltip-content={"Open the inventory report"}
                                     onClick={() => window.open(`/reports/inventory/${inventory.id}`, "_blank")}
                                     disabled={!inventory.finished}>
-                                    <FiEdit3/>
+                                    <FaRegFilePdf />
                                 </button>
                                 <button
                                     className={"hover:bg-green-500 hover:scale-105 bg-green-300 text-black shadow-md rounded px-3 py-1 m-1 transition"}
@@ -153,6 +154,7 @@ function InventoryPage() {
                     ))}
                     </tbody>
                 </table>
+                <Tooltip id={"show-tip"}/>
                 <Tooltip id={"edit-tip"}/>
                 <Tooltip id={"delete-tip"}/>
             </div>
