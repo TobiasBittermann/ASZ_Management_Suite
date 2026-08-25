@@ -1,6 +1,7 @@
 package de.tobi.asz_inventory_api.bierwart.bwReports;
 
 import com.lowagie.text.*;
+import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
@@ -14,10 +15,13 @@ import de.tobi.asz_inventory_api.member.Member;
 import de.tobi.asz_inventory_api.member.MemberService;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +44,25 @@ public class BookingsReportService {
         this.drinkService = drinkService;
     }
 
+    //Formatter
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+    //Colors
+    Color white = new Color(255, 255, 255);
+    Color black = new Color(0, 0, 0);
+    Color lightGray = new Color(220, 220, 220);
+    Color darkGray = new Color(70, 70, 70);
+    Color green = new Color(0, 150, 0);
+    Color red = new Color(255, 0, 0);
+
+    // Fonts
+    int size = 9;
+    Font titleFont = new Font(Font.HELVETICA, 15, Font.BOLD);
+    Font headerWhiteFont = new Font(Font.HELVETICA, size, Font.BOLD, white);
+    Font blackFont = new Font(Font.HELVETICA, size, Font.NORMAL, black);
+    Font greenFont = new Font(Font.HELVETICA, size, Font.NORMAL, green);
+    Font redFont = new Font(Font.HELVETICA, size, Font.NORMAL, red);
+
     public List<Member> loadSortedMembers() throws IOException {
         List<Member> members = memberService.getAllMembers().stream()
                 .sorted(Comparator
@@ -50,18 +73,30 @@ public class BookingsReportService {
         return members;
     }
 
+    private PdfPCell formatCell(String text, boolean alignRight) {
+        return formatCell(text, blackFont, white, alignRight);
+    }
+
+    private PdfPCell formatCell(String text, Font font, Color color, boolean alignRight) {
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
+        cell.setBackgroundColor(color);
+        cell.setBorderColor(lightGray);
+        cell.setBorderWidth(0.5f);
+        cell.setPadding(6f);
+        if (alignRight) {
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        }
+        return cell;
+    }
+
 
     public byte[] generateBookingsReport(LocalDateTime dateFrom, LocalDateTime dateTo) throws DocumentException, IOException {
         Document document = new Document();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        // Fonts
-        Font titleFont = new Font(Font.HELVETICA, 15, Font.BOLD);
-        Font normal = new Font(Font.HELVETICA, 10);
-
         // Paragraphs
         Paragraph header = new Paragraph("Bierliste", titleFont);
-        Paragraph timespan = new Paragraph("Zeitraum: ${} - ${}", normal);
+        Paragraph timespan = new Paragraph(String.format("Zeitraum: %s - %s", dateFrom.format(formatter), dateTo.format(formatter)), blackFont);
 
         // Spacing
         timespan.setSpacingAfter(15f);
@@ -80,9 +115,9 @@ public class BookingsReportService {
             List<BwDeposit> memberDeposits = deposits.stream().filter(d -> d.getMemberId() == member.getId()).toList();
             Map<Long, Integer> consumedDrinks = new HashMap<>();
 
-            PdfPCell wideCell = new PdfPCell(new Phrase(String.format("%s, %s", member.getLastName(), member.getFirstName())));
-            wideCell.setColspan(3);
-            table.addCell(wideCell);
+            PdfPCell nameCell = formatCell(String.format("%s, %s", member.getLastName(), member.getFirstName()), headerWhiteFont, darkGray, false);
+            nameCell.setColspan(3);
+            table.addCell(nameCell);
             BigDecimal depositSum = BigDecimal.ZERO;
             BigDecimal expenditureSum = BigDecimal.ZERO;
 
@@ -93,12 +128,16 @@ public class BookingsReportService {
                 expenditureSum = expenditureSum.add(booking.getBookingCost());
             }
 
-            table.addCell("Kontostand");
-            table.addCell("Ausgaben");
-            table.addCell("Einzahlungen");
-            table.addCell(member.getBalance().toString());
-            table.addCell(expenditureSum.toString());
-            table.addCell(depositSum.toString());
+            table.addCell(formatCell("Kontostand", blackFont, lightGray, false));
+            table.addCell(formatCell("Einzahlungen", blackFont, lightGray, false));
+            table.addCell(formatCell("Ausgaben", blackFont, lightGray, false));
+            if (member.getBalance().compareTo(BigDecimal.ZERO) > 0) {
+                table.addCell(formatCell(member.getBalance().toString(), greenFont, white, true));
+            } else {
+                table.addCell(formatCell(member.getBalance().toString(), redFont, white, true));
+            }
+            table.addCell(formatCell(depositSum.toString(), true));
+            table.addCell(formatCell(expenditureSum.toString(), true));
 
 
             for (BwBooking booking : memberBookings) {
@@ -107,24 +146,27 @@ public class BookingsReportService {
                 }
             }
 
-            table.addCell("Getränke");
-            table.addCell("Anzahl");
-            table.addCell("Kosten Gesamt");
+            table.addCell(formatCell("Getränke", blackFont, lightGray, false));
+            table.addCell(formatCell("Anzahl", blackFont, lightGray, false));
+            table.addCell(formatCell("Kosten Gesamt", blackFont, lightGray, false));
 
             for (Long id : consumedDrinks.keySet()) {
 
                 Drink drink = drinks.stream().filter(d -> d.getId() == id).findAny().orElseThrow();
                 String name = drink.getName();
                 String amount = consumedDrinks.get(id).toString();
-                String cost = drink.getSellingPrice().multiply(BigDecimal.valueOf(consumedDrinks.get(id))).toString();
+                String cost = drink.getSellingPrice().multiply(BigDecimal.valueOf(consumedDrinks.get(id))).setScale(2, RoundingMode.HALF_UP).toString();
 
-                table.addCell(name);
-                table.addCell(amount);
-                table.addCell(cost);
+                table.addCell(formatCell(name, false));
+                table.addCell(formatCell(amount, true));
+                table.addCell(formatCell(cost, true));
             }
+
 
             PdfPCell endCell = new PdfPCell(new Phrase(""));
             endCell.setColspan(3);
+            endCell.setBorder(com.lowagie.text.Rectangle.NO_BORDER);  // kein Rahmen um die Lücke
+            endCell.setFixedHeight(7f);              // Höhe der "Lücke" in Punkten
             table.addCell(endCell);
         }
 
