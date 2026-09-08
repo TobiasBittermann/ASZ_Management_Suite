@@ -3,7 +3,6 @@ package de.tobi.asz_inventory_api.bierwart.bwDeposit;
 import de.tobi.asz_inventory_api.enums.AccountType;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -15,7 +14,7 @@ public class BwDepositController {
     }
 
     @GetMapping("/bwdeposits")
-    public List<BwDeposit> getAllBwDeposits() throws IOException {
+    public List<BwDeposit> getAllBwDeposits() {
         return depositService.getAllBwDeposits();
     }
 
@@ -25,17 +24,17 @@ public class BwDepositController {
     }
 
     @PostMapping("/bwdeposits")
-    public void addBwDeposit(@RequestBody BwDeposit deposit) throws IOException {
+    public void addBwDeposit(@RequestBody BwDeposit deposit) {
         depositService.addBwDeposit(deposit);
     }
 
     @PutMapping("/bwdeposits/{id}")
-    public void updateBwDeposit(@PathVariable long id, @RequestBody BwDeposit deposit) throws IOException {
+    public void updateBwDeposit(@PathVariable long id, @RequestBody BwDeposit deposit) {
         depositService.updateBwDeposit(id, deposit);
     }
 
     @DeleteMapping("/bwdeposits/{id}")
-    public void deleteBwDeposit(@PathVariable long id) throws IOException {
+    public void deleteBwDeposit(@PathVariable long id) {
         depositService.deleteBwDeposit(id);
     }
 }

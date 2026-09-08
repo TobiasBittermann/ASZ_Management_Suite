@@ -2,7 +2,6 @@ package de.tobi.asz_inventory_api.bierwart.drink;
 
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -15,22 +14,22 @@ public class DrinkController {
     }
 
     @GetMapping("/drinks")
-    public List<Drink> getAllDrinks() throws IOException {
+    public List<Drink> getAllDrinks() {
         return drinkService.getAllDrinks();
     }
 
     @PostMapping("/drinks")
-    public void addDrink(@RequestBody Drink drink) throws IOException {
+    public void addDrink(@RequestBody Drink drink) {
         drinkService.addDrink(drink);
     }
 
     @PutMapping("/drinks/{id}")
-    public void updateDrink(@PathVariable long id, @RequestBody Drink drink) throws IOException {
+    public void updateDrink(@PathVariable long id, @RequestBody Drink drink)  {
         drinkService.updateDrink(id, drink);
     }
 
     @DeleteMapping("/drinks/{id}")
-    public void deleteDrink(@PathVariable long id) throws IOException {
+    public void deleteDrink(@PathVariable long id)   {
         drinkService.deleteDrink(id);
     }
 }

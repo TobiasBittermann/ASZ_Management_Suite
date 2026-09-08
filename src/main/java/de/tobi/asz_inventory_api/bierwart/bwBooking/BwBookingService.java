@@ -8,53 +8,37 @@ import de.tobi.asz_inventory_api.member.Member;
 import de.tobi.asz_inventory_api.member.MemberService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Service
 public class BwBookingService {
-    private final BwBookingCsvRepository repository;
+    private final BwBookingRepository repository;
     private final MemberService memberService;
     private final DrinkService drinkService;
     private final BwAccountSnapshotService snapshotService;
-    private final String filePath;
     private static final Logger log = LoggerFactory.getLogger(BwBookingService.class);
 
-    public BwBookingService(BwBookingCsvRepository repository,
+    public BwBookingService(BwBookingRepository repository,
                             MemberService memberService,
                             DrinkService drinkService,
-                            BwAccountSnapshotService snapshotService,
-                            @Value("${app.bwbookings.csv-path}") String filePath) {
+                            BwAccountSnapshotService snapshotService) {
         this.repository = repository;
         this.memberService = memberService;
         this.drinkService = drinkService;
         this.snapshotService = snapshotService;
-        this.filePath = filePath;
     }
 
-    public List<BwBooking> getAllBwBookings() throws IOException {
-        List<BwBooking> bookings = repository.getAllBwBookings(filePath);
+    public List<BwBooking> getAllBwBookings() {
+        List<BwBooking> bookings = repository.findAll();
         log.debug("BwBookingsService loaded {} bookings.", bookings.size());
-
         return bookings;
     }
 
-    public void addBwBooking(BwBooking booking) throws IOException {
-        List<BwBooking> bookings = repository.getAllBwBookings(filePath);
-
-        long nextId = bookings.stream()
-                .mapToLong(BwBooking::getId)
-                .max()
-                .orElse(0) + 1;
-
-        booking.setId(nextId);
-
-        repository.addBwBooking(bookings, booking);
-        repository.saveBwBooking(filePath, bookings);
+    public void addBwBooking(BwBooking booking) {
+        repository.save(booking);
 
         changeBalance(booking, false);
         changeAmountDrinks(booking, false);
@@ -62,11 +46,8 @@ public class BwBookingService {
         log.info("BwBookingService added booking with id {}", booking.getId());
     }
 
-    public void updateBwBooking(long id, BwBooking booking) throws IOException {
-        List<BwBooking> bookings = repository.getAllBwBookings(filePath);
-        List<Drink> drinks = drinkService.getAllDrinks();
-
-        BwBooking oldBooking = bookings.stream().filter(b -> b.getId() == id).findAny().orElseThrow();
+    public void updateBwBooking(long id, BwBooking booking) {
+        BwBooking oldBooking = repository.findById(id).orElseThrow();
         BigDecimal oldCost = oldBooking.getBookingCost();
 
         changeAmountDrinks(oldBooking, true);
@@ -74,47 +55,38 @@ public class BwBookingService {
 
         booking.setId(id);
 
-        repository.updateBwBooking(bookings, booking);
-        repository.saveBwBooking(filePath, bookings);
+        repository.save(booking);
 
         changeAmountDrinks(booking, false);
         changeBalance(booking, false);
 
         log.info("BwBookingService updated booking with id {}", booking.getId());
 
-        Drink drink = drinks.stream().filter(d -> d.getId() == booking.getDrinkId()).findAny().orElseThrow();
+        Drink drink = drinkService.getDrinkById(booking.getDrinkId());
 
         BigDecimal valueIncrease = booking.getBookingCost().subtract(oldCost);
-        String note = String.format("Automatische Inventarkorrekturbuchung: %s %s", drink.getName(), valueIncrease.negate());
+        String note = String.format("Automatische Inventurkorrekturbuchung: %s %s", drink.getName(), valueIncrease.negate());
         snapshotService.addTransactionSnapshot(valueIncrease.negate(), AccountType.INVENTORY, note);
     }
 
-    public void deleteBwBooking(long id) throws IOException {
-        List<BwBooking> bookings = repository.getAllBwBookings(filePath);
-        List<Drink> drinks = drinkService.getAllDrinks();
-
-        BwBooking booking = bookings.stream().filter(b -> b.getId() == id).findAny().orElseThrow();
-
-        repository.deleteBwBooking(bookings, id);
-        repository.saveBwBooking(filePath, bookings);
+    public void deleteBwBooking(long id) {
+        BwBooking booking = repository.findById(id).orElseThrow();
+        repository.deleteById(id);
 
         changeBalance(booking, true);
         changeAmountDrinks(booking, true);
 
         log.info("BwBookingService deleted booking with id {}", id);
 
-        Drink drink = drinks.stream().filter(d -> d.getId() == booking.getDrinkId()).findAny().orElseThrow();
+        Drink drink = drinkService.getDrinkById(booking.getDrinkId());
 
-        String note = String.format("Automatische Inventarrückbuchung: %s %s", drink.getName(), booking.getBookingCost());
+        String note = String.format("Automatische Inventurrückbuchung: %s %s", drink.getName(), booking.getBookingCost());
         snapshotService.addTransactionSnapshot(booking.getBookingCost(), AccountType.INVENTORY, note);
     }
 
 
-    private void changeBalance(BwBooking booking, boolean x) throws IOException {
-        List<Member> members = memberService.getAllMembers();
-
-        Member member = members.stream().filter(m -> m.getId() == booking.getMemberId()).findAny().orElseThrow();
-
+    private void changeBalance(BwBooking booking, boolean x) {
+        Member member = memberService.getMemberById(booking.getMemberId());
         BigDecimal price = booking.getBookingCost();
 
         if (x) {
@@ -133,11 +105,8 @@ public class BwBookingService {
                 member.getBalance());
     }
 
-    private void changeAmountDrinks(BwBooking booking, boolean x) throws IOException {
-        List<Drink> drinks = drinkService.getAllDrinks();
-
-        Drink drink = drinks.stream().filter(d -> d.getId() == booking.getDrinkId()).findAny().orElseThrow();
-
+    private void changeAmountDrinks(BwBooking booking, boolean x) {
+        Drink drink = drinkService.getDrinkById(booking.getDrinkId());
         int amount = booking.getAmountDrink();
 
         if (x) {

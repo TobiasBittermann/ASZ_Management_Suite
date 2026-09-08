@@ -4,10 +4,8 @@ import de.tobi.asz_inventory_api.bierwart.bwAccountSnapshot.BwAccountSnapshotSer
 import de.tobi.asz_inventory_api.enums.AccountType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -23,6 +21,10 @@ public class DrinkService {
         this.snapshotService = snapshotService;
     }
 
+    public Drink getDrinkById(Long id){
+        return repository.findById(id).orElseThrow();
+    }
+
     public List<Drink> getAllDrinks() {
         List<Drink> drinks = repository.findAll();
         log.debug("DrinkService loaded {} drinks.", drinks.size());
@@ -30,7 +32,7 @@ public class DrinkService {
         return drinks;
     }
 
-    public void addDrink(Drink drink) throws IOException {
+    public void addDrink(Drink drink) {
         calculateSellingPrice(drink);
         calculateTotalValue(drink);
 
@@ -38,11 +40,11 @@ public class DrinkService {
 
         log.info("DrinkService added drink {} with id {}.", drink.getName(), drink.getId());
 
-        String note = String.format("Automatische Inventarbuchung: %s %s", drink.getName(), drink.getTotalValue());
+        String note = String.format("Automatische Inventurbuchung: %s %s", drink.getName(), drink.getTotalValue());
         snapshotService.addTransactionSnapshot(drink.getTotalValue(), AccountType.INVENTORY, note);
     }
 
-    public void updateDrink(long id, Drink drink) throws IOException {
+    public void updateDrink(long id, Drink drink) {
         Drink oldDrink = repository.findById(id).orElseThrow();
         BigDecimal oldTotalValue = oldDrink.getTotalValue();
 
@@ -56,11 +58,11 @@ public class DrinkService {
         log.info("DrinkService updated drink {} with id {}.", drink.getName(), drink.getId());
 
         BigDecimal valueIncrease = drink.getTotalValue().subtract(oldTotalValue);
-        String note = String.format("Automatische Inventarbuchung: %s %s €", drink.getName(), valueIncrease);
+        String note = String.format("Automatische Inventurbuchung: %s %s €", drink.getName(), valueIncrease);
         snapshotService.addTransactionSnapshot(valueIncrease, AccountType.INVENTORY, note);
     }
 
-    public void deleteDrink(long id) throws IOException {
+    public void deleteDrink(long id) {
         Drink drink = repository.findById(id).orElseThrow();
         repository.deleteById(id);
 

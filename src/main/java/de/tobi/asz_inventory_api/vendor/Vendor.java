@@ -1,13 +1,22 @@
 package de.tobi.asz_inventory_api.vendor;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Vendor {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
     private String contactPerson;
     private String address;
     private String iban;
 
-    public Vendor(){}
+    public Vendor() {
+    }
 
     public Vendor(Vendor other) {
         this.id = other.id;
@@ -57,7 +66,7 @@ public class Vendor {
         this.iban = iban;
     }
 
-    public void updateFrom(Vendor vendor){
+    public void updateFrom(Vendor vendor) {
         this.id = vendor.id;
         this.name = vendor.name;
         this.contactPerson = vendor.contactPerson;

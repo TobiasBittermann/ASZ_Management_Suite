@@ -2,7 +2,6 @@ package de.tobi.asz_inventory_api.bierwart.inventory;
 
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -15,22 +14,22 @@ public class InventoryController {
     }
 
     @GetMapping("/inventories")
-    public List<Inventory> getAllInventories() throws IOException{
+    public List<Inventory> getAllInventories()  {
         return inventoryService.getAllInventories();
     }
 
     @PostMapping("/inventories")
-    public void addInventory(@RequestBody Inventory inventory) throws IOException{
+    public void addInventory(@RequestBody Inventory inventory)  {
         inventoryService.addInventory(inventory);
     }
 
     @PutMapping("/inventories/{id}")
-    public void updateInventory(@PathVariable long id, @RequestBody Inventory inventory) throws IOException{
+    public void updateInventory(@PathVariable long id, @RequestBody Inventory inventory)  {
         inventoryService.updateInventory(id, inventory);
     }
 
     @DeleteMapping("/inventories/{id}")
-    public void deleteInventory(@PathVariable long id) throws IOException{
+    public void deleteInventory(@PathVariable long id)  {
         inventoryService.deleteInventory(id);
     }
 }

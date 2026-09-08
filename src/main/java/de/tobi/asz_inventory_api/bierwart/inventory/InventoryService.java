@@ -6,10 +6,8 @@ import de.tobi.asz_inventory_api.bierwart.inventoryEntry.InventoryEntry;
 import de.tobi.asz_inventory_api.bierwart.inventoryEntry.InventoryEntryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -67,7 +65,7 @@ public class InventoryService {
 
     }
 
-    public void finishInventoryIfComplete(long inventoryId) throws IOException {
+    public void finishInventoryIfComplete(long inventoryId) {
         List<Inventory> inventories = repository.findAll();
         Inventory inventory = inventories.stream().filter(i -> i.getId() == inventoryId).findAny().orElseThrow();
 

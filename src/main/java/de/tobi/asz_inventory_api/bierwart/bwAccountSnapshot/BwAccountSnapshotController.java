@@ -2,7 +2,6 @@ package de.tobi.asz_inventory_api.bierwart.bwAccountSnapshot;
 
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -15,22 +14,22 @@ public class BwAccountSnapshotController {
     }
 
     @GetMapping("/bwsnapshots")
-    public List<BwAccountSnapshot> getAllBwAccountSnapshots() throws IOException{
+    public List<BwAccountSnapshot> getAllBwAccountSnapshots() {
         return snapshotService.getAllBwAccountSnapshots();
     }
 
     @PostMapping("/bwsnapshots")
-    public void addBwAccountSnapshot(@RequestBody BwAccountSnapshot snapshot) throws IOException{
+    public void addBwAccountSnapshot(@RequestBody BwAccountSnapshot snapshot) {
         snapshotService.addBwAccountSnapshot(snapshot);
     }
 
     @PutMapping("/bwsnapshots/{id}")
-    public void updateBwAccountSnapshot(@PathVariable long id, @RequestBody BwAccountSnapshot snapshot) throws IOException{
+    public void updateBwAccountSnapshot(@PathVariable long id, @RequestBody BwAccountSnapshot snapshot) {
         snapshotService.updateBwAccountSnapshot(id, snapshot);
     }
 
     @DeleteMapping("/bwsnapshots/{id}")
-    public void deleteBwAccountSnapshot(@PathVariable long id) throws IOException{
+    public void deleteBwAccountSnapshot(@PathVariable long id) {
         snapshotService.deleteBwAccountSnapshot(id);
     }
 }

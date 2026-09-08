@@ -1,6 +1,7 @@
 package de.tobi.asz_inventory_api.bierwart.bwAccountBooking;
 
 import de.tobi.asz_inventory_api.enums.AccountType;
+import de.tobi.asz_inventory_api.vendor.Vendor;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -11,7 +12,9 @@ public class BwAccountBooking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private long vendorId;
+    @ManyToOne
+    @JoinColumn(name = "vendor_id")
+    private Vendor vendor;
     private BigDecimal amount;
     private String invoiceNumber;
     @Enumerated(EnumType.STRING)
@@ -24,7 +27,7 @@ public class BwAccountBooking {
 
     public BwAccountBooking(BwAccountBooking other) {
         this.id = other.id;
-        this.vendorId = other.vendorId;
+        this.vendor = other.vendor;
         this.amount = other.amount;
         this.invoiceNumber = other.invoiceNumber;
         this.accountType = other.accountType;
@@ -40,12 +43,12 @@ public class BwAccountBooking {
         this.id = id;
     }
 
-    public long getVendorId() {
-        return vendorId;
+    public Vendor getVendor() {
+        return vendor;
     }
 
-    public void setVendorId(long vendorId) {
-        this.vendorId = vendorId;
+    public void setVendor(Vendor vendor) {
+        this.vendor = vendor;
     }
 
     public BigDecimal getAmount() {
@@ -90,7 +93,7 @@ public class BwAccountBooking {
 
     public void updateFrom(BwAccountBooking booking) {
         this.id = booking.id;
-        this.vendorId = booking.vendorId;
+        this.vendor = booking.vendor;
         this.amount = booking.amount;
         this.invoiceNumber = booking.invoiceNumber;
         this.accountType = booking.accountType;
