@@ -1,6 +1,6 @@
 package de.tobi.asz_inventory_api.enums;
 
-public enum Position {
+public enum PositionType {
     CHAIRMAN("Senior"),
     PLEDGE_MASTER("Fuxmajor"),
     SECRETARY("Schriftwart"),
@@ -11,7 +11,7 @@ public enum Position {
 
     private final String displayName;
 
-    Position(String displayName) {
+    PositionType(String displayName) {
         this.displayName = displayName;
     }
 

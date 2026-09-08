@@ -1,14 +1,19 @@
 package de.tobi.asz_inventory_api.bierwart.bwDeposit;
 
 import de.tobi.asz_inventory_api.enums.AccountType;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Entity
 public class BwDeposit {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private long memberId;
     private BigDecimal deposit;
+    @Enumerated(EnumType.STRING)
     private AccountType accountType;
     private LocalDateTime depositDate;
     private String description;

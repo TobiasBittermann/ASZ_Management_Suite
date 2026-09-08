@@ -1,8 +1,16 @@
 package de.tobi.asz_inventory_api.bierwart.inventoryEntry;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import java.math.BigDecimal;
 
+@Entity
 public class InventoryEntry {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private long inventoryId;
     private long drinkId;

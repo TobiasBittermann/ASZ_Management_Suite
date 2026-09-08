@@ -14,55 +14,35 @@ import java.util.List;
 
 @Service
 public class InventoryService {
-    private final InventoryCsvRepository repository;
+    private final InventoryRepository repository;
     private final InventoryEntryService entryService;
     private final DrinkService drinkService;
-    private final String filePath;
     private static final Logger log = LoggerFactory.getLogger(InventoryService.class);
 
-    public InventoryService(InventoryCsvRepository repository,
+    public InventoryService(InventoryRepository repository,
                             InventoryEntryService entryService,
-                            DrinkService drinkService,
-                            @Value("${app.inventories.csv-path}") String filePath) {
+                            DrinkService drinkService) {
         this.repository = repository;
         this.entryService = entryService;
         this.drinkService = drinkService;
-        this.filePath = filePath;
     }
 
-    public List<Inventory> getAllInventories() throws IOException {
-        List<Inventory> inventories = repository.getAllInventories(filePath);
+    public List<Inventory> getAllInventories() {
+        List<Inventory> inventories = repository.findAll();
         log.debug("InventoryService loaded {} inventories", inventories.size());
 
         return inventories;
     }
 
-    public void addInventory(Inventory inventory) throws IOException {
-        List<Inventory> inventories = repository.getAllInventories(filePath);
-        List<InventoryEntry> entries = entryService.getAllInventoryEntries();
+    public void addInventory(Inventory inventory) {
         List<Drink> drinks = drinkService.getAllDrinks();
 
-        long nextId = inventories.stream()
-                .mapToLong(Inventory::getId)
-                .max()
-                .orElse(0) + 1;
-
-        inventory.setId(nextId);
-
-        repository.addInventory(inventories, inventory);
-        repository.saveInventory(filePath, inventories);
-
+        repository.save(inventory);
         log.info("InventoryService added inventory with id {}", inventory.getId());
-
-        long nextEntryId = entries.stream()
-                .mapToLong(InventoryEntry::getId)
-                .max()
-                .orElse(0) + 1;
 
         for (Drink drink : drinks) {
             InventoryEntry entry = new InventoryEntry();
 
-            entry.setId(nextEntryId++);
             entry.setInventoryId(inventory.getId());
             entry.setDrinkId(drink.getId());
             entry.setInitialQuantity(drink.getAmount());
@@ -74,30 +54,24 @@ public class InventoryService {
         }
     }
 
-    public void updateInventory(long id, Inventory inventory) throws IOException {
-        List<Inventory> inventories = repository.getAllInventories(filePath);
-        List<InventoryEntry> entries = entryService.getAllInventoryEntries();
-
+    public void updateInventory(long id, Inventory inventory) {
         inventory.setId(id);
-
-        repository.updateInventory(inventories, inventory);
-        repository.saveInventory(filePath, inventories);
+        repository.save(inventory);
 
         log.info("InventoryService updated inventory with id {}", inventory.getId());
     }
 
-    public void deleteInventory(long id) throws IOException {
-        List<Inventory> inventories = repository.getAllInventories(filePath);
+    public void deleteInventory(long id) {
+        repository.deleteById(id);
+        log.info("InventoryService deleted inventory with id {}", id);
 
-        repository.deleteInventory(inventories, id);
-        repository.saveInventory(filePath, inventories);
     }
 
-    public void finishInventoryIfComplete(long inventoryId) throws IOException{
-        List<Inventory> inventories = repository.getAllInventories(filePath);
+    public void finishInventoryIfComplete(long inventoryId) throws IOException {
+        List<Inventory> inventories = repository.findAll();
         Inventory inventory = inventories.stream().filter(i -> i.getId() == inventoryId).findAny().orElseThrow();
 
-        if(inventory.isFinished()){
+        if (inventory.isFinished()) {
             return;
         }
 
@@ -105,14 +79,13 @@ public class InventoryService {
         List<InventoryEntry> currentEntries = entries.stream().filter(e -> e.getInventoryId() == inventoryId).toList();
         boolean allCounted = currentEntries.stream().allMatch(e -> e.getQuantity() != null);
 
-        if(allCounted){
+        if (allCounted) {
             inventory.setFinished(true);
-            repository.updateInventory(inventories, inventory);
-            repository.saveInventory(filePath, inventories);
+            repository.save(inventory);
 
             List<Drink> drinks = drinkService.getAllDrinks();
-            for(InventoryEntry currentEntry : currentEntries){
-                if(currentEntry.getQuantity() != currentEntry.getInitialQuantity()){
+            for (InventoryEntry currentEntry : currentEntries) {
+                if (currentEntry.getQuantity() != currentEntry.getInitialQuantity()) {
                     Drink drink = drinks.stream().filter(d -> d.getId() == currentEntry.getDrinkId()).findAny().orElseThrow();
                     drink.setAmount(currentEntry.getQuantity());
                     drinkService.updateDrink(drink.getId(), drink);

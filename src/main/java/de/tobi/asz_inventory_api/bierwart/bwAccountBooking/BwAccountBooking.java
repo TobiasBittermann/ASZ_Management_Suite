@@ -1,15 +1,20 @@
 package de.tobi.asz_inventory_api.bierwart.bwAccountBooking;
 
 import de.tobi.asz_inventory_api.enums.AccountType;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Entity
 public class BwAccountBooking {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private long vendorId;
     private BigDecimal amount;
     private String invoiceNumber;
+    @Enumerated(EnumType.STRING)
     private AccountType accountType;
     private LocalDateTime date;
     private String note;

@@ -1,18 +1,22 @@
 package de.tobi.asz_inventory_api.member;
 
-import de.tobi.asz_inventory_api.enums.AcademicDegree;
-import de.tobi.asz_inventory_api.enums.Position;
+import de.tobi.asz_inventory_api.academicDegree.AcademicDegree;
 import de.tobi.asz_inventory_api.enums.Status;
-import jakarta.persistence.Embedded;
+import de.tobi.asz_inventory_api.familyLine.FamilyLine;
+import de.tobi.asz_inventory_api.position.Position;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+@Entity
 public class Member {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private AcademicDegree academicDegree;
-    private String fieldOfStudy;
+    @OneToMany(mappedBy = "member")
+    private List<AcademicDegree> academicDegree;
     private String firstName;
     private String lastName;
     private LocalDate birthday;
@@ -27,10 +31,14 @@ public class Member {
     private LocalDate dojActiveMember;
     private LocalDate dojAlumni;
     private LocalDate dateOfExit;
+    @ManyToOne
+    @JoinColumn(name = "familyLine_id")
     private FamilyLine familyLine;
+    private boolean foundingMember;
+    @Enumerated(EnumType.STRING)
     private Status status;
-    private Position position;
-    public List<Position> dischargedPositions;
+    @OneToMany(mappedBy = "member")
+    private List<Position> positions;
 
     public Member() {
     }
@@ -38,7 +46,6 @@ public class Member {
     public Member(Member other) {
         this.id = other.id;
         this.academicDegree = other.academicDegree;
-        this.fieldOfStudy = other.fieldOfStudy;
         this.firstName = other.firstName;
         this.lastName = other.lastName;
         this.birthday = other.birthday;
@@ -52,10 +59,9 @@ public class Member {
         this.dojAlumni = other.dojAlumni;
         this.dateOfExit = other.dateOfExit;
         this.familyLine = other.familyLine;
-        ;
+        this.foundingMember = other.foundingMember;
         this.status = other.status;
-        this.position = other.position;
-        this.dischargedPositions = other.dischargedPositions;
+        this.positions = other.positions;
     }
 
     public long getId() {
@@ -98,20 +104,12 @@ public class Member {
         this.balance = balance;
     }
 
-    public AcademicDegree getAcademicDegree() {
+    public List<AcademicDegree> getAcademicDegree() {
         return academicDegree;
     }
 
-    public void setAcademicDegree(AcademicDegree academicDegree) {
+    public void setAcademicDegree(List<AcademicDegree> academicDegree) {
         this.academicDegree = academicDegree;
-    }
-
-    public String getFieldOfStudy() {
-        return fieldOfStudy;
-    }
-
-    public void setFieldOfStudy(String fieldOfStudy) {
-        this.fieldOfStudy = fieldOfStudy;
     }
 
     public LocalDate getBirthday() {
@@ -186,6 +184,14 @@ public class Member {
         this.familyLine = familyLine;
     }
 
+    public boolean isFoundingMember() {
+        return foundingMember;
+    }
+
+    public void setFoundingMember(boolean foundingMember) {
+        this.foundingMember = foundingMember;
+    }
+
     public Status getStatus() {
         return status;
     }
@@ -194,25 +200,16 @@ public class Member {
         this.status = status;
     }
 
-    public Position getPosition() {
-        return position;
+    public List<Position> getPositions() {
+        return positions;
     }
 
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
-    public List<Position> getDischargedPositions() {
-        return dischargedPositions;
-    }
-
-    public void setDischargedPositions(List<Position> dischargedPositions) {
-        this.dischargedPositions = dischargedPositions;
+    public void setPositions(List<Position> positions) {
+        this.positions = positions;
     }
 
     public void updateFrom(Member member) {
         this.academicDegree = member.academicDegree;
-        this.fieldOfStudy = member.fieldOfStudy;
         this.firstName = member.firstName;
         this.lastName = member.lastName;
         this.birthday = member.birthday;
@@ -226,8 +223,8 @@ public class Member {
         this.dojAlumni = member.dojAlumni;
         this.dateOfExit = member.dateOfExit;
         this.familyLine = member.familyLine;
+        this.foundingMember = member.foundingMember;
         this.status = member.status;
-        this.position = member.position;
-        this.dischargedPositions = member.dischargedPositions;
+        this.positions = member.positions;
     }
 }

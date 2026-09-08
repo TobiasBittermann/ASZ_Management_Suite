@@ -1,6 +1,6 @@
 package de.tobi.asz_inventory_api.enums;
 
-public enum AcademicDegree {
+public enum AcademicDegreeType {
     STUDENT("Student", "Student"),
     BSC("B.Sc.", "Bachelor of Science"),
     MSC("M.Sc.", "Master of Science"),
@@ -18,7 +18,7 @@ public enum AcademicDegree {
     private final String abbreviation;
     private final String fullName;
 
-    AcademicDegree(String abbreviation, String fullName) {
+    AcademicDegreeType(String abbreviation, String fullName) {
         this.abbreviation = abbreviation;
         this.fullName = fullName;
     }
