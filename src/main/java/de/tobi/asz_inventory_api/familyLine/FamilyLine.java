@@ -1,5 +1,6 @@
 package de.tobi.asz_inventory_api.familyLine;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.tobi.asz_inventory_api.member.Member;
 import jakarta.persistence.*;
 
@@ -14,6 +15,7 @@ public class FamilyLine {
     private String name;
     private LocalDate foundingDate;
     @OneToMany(mappedBy = "familyLine")
+    @JsonManagedReference
     private List<Member> members;
 
     public FamilyLine() {}

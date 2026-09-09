@@ -1,5 +1,7 @@
 package de.tobi.asz_inventory_api.member;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import de.tobi.asz_inventory_api.academicDegree.AcademicDegree;
 import de.tobi.asz_inventory_api.enums.Status;
 import de.tobi.asz_inventory_api.familyLine.FamilyLine;
@@ -16,6 +18,7 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @OneToMany(mappedBy = "member")
+    @JsonManagedReference
     private List<AcademicDegree> academicDegree;
     private String firstName;
     private String lastName;
@@ -32,12 +35,14 @@ public class Member {
     private LocalDate dojAlumni;
     private LocalDate dateOfExit;
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "familyLine_id")
     private FamilyLine familyLine;
     private boolean foundingMember;
     @Enumerated(EnumType.STRING)
     private Status status;
     @OneToMany(mappedBy = "member")
+    @JsonManagedReference
     private List<Position> positions;
 
     public Member() {

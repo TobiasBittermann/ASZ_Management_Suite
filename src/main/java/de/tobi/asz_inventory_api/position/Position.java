@@ -1,5 +1,6 @@
 package de.tobi.asz_inventory_api.position;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import de.tobi.asz_inventory_api.enums.PositionType;
 import de.tobi.asz_inventory_api.enums.Semester;
 import de.tobi.asz_inventory_api.member.Member;
@@ -13,10 +14,11 @@ public class Position {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name="member_id")
     private Member member;
     @Enumerated(EnumType.STRING)
-    private PositionType position;
+    private PositionType positionType;
     @Enumerated(EnumType.STRING)
     private Semester semester;
     private LocalDate year;
@@ -27,7 +29,7 @@ public class Position {
     public Position (Position other){
         this.id = other.id;
         this.member = other.member;
-        this.position = other.position;
+        this.positionType = other.positionType;
         this.semester = other.semester;
         this.year = other.year;
         this.discharged = other.discharged;
@@ -49,12 +51,12 @@ public class Position {
         this.member = member;
     }
 
-    public PositionType getPosition() {
-        return position;
+    public PositionType getPositionType() {
+        return positionType;
     }
 
-    public void setPosition(PositionType position) {
-        this.position = position;
+    public void setPositionType(PositionType positionType) {
+        this.positionType = positionType;
     }
 
     public Semester getSemester() {
@@ -83,7 +85,7 @@ public class Position {
 
     public void updateFrom(Position position){
         this.member = position.member;
-        this.position = position.position;
+        this.positionType = position.positionType;
         this.semester = position.semester;
         this.year = position.year;
         this.discharged = position.discharged;
