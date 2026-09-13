@@ -1,17 +1,28 @@
 services:
   backend:
+    depends_on:
+      - db
     build:
       context: .
       dockerfile: Dockerfile.backend
     volumes:
-      - ./CSV:/data
       - ./logs:/app/logs
     environment:
       APP_FRONTEND_ORIGIN: http://localhost:8081,http://192.168.0.152:8081
-      APP_MEMBERS_CSV_PATH: /data/members.csv
-      APP_DRINKS_CSV_PATH: /data/drinks.csv
-      APP_BWBOOKINGS_CSV_PATH: /data/bwbookings.csv
-      APP_BWDEPOSITS_CSV_PATH: /data/bwdeposits.csv
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/asz_management_suite
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: asz_management_suite
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
   frontend:
     build:
@@ -21,3 +32,6 @@ services:
       - "8081:80"
     depends_on:
       - backend
+
+volumes:
+  pgdata:

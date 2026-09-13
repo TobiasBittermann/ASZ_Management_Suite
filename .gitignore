@@ -34,3 +34,5 @@ CSV/
 logs/
 .idea/
 .iml
+application-local.properties
+.env

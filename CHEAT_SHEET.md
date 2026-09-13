@@ -970,20 +970,11 @@ Container können gelöscht werden, die Daten bleiben erhalten.
 
 Spring kann Properties durch Environment Variables überschreiben.
 
-### Mapping-Regel
-
-`app.members.csv-path`
-
-wird zu:
-
-`APP_MEMBERS_CSV_PATH`
-
 ### In Compose
 
 ```yaml
 environment:
   APP_FRONTEND_ORIGIN: http://localhost:8081
-  APP_MEMBERS_CSV_PATH: /data/members.csv
 ```
 
 ## Vorteil

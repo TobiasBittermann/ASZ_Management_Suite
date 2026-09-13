@@ -1,5 +1,6 @@
 package de.tobi.asz_inventory_api.academicDegree;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import de.tobi.asz_inventory_api.enums.AcademicDegreeType;
 import de.tobi.asz_inventory_api.member.Member;
 import jakarta.persistence.*;
@@ -13,6 +14,7 @@ public class AcademicDegree {
     private long id;
     @ManyToOne
     @JoinColumn(name = "member_id")
+    @JsonBackReference
     private Member member;
     @Enumerated(EnumType.STRING)
     private AcademicDegreeType academicDegreeType;
