@@ -3,6 +3,8 @@ services:
     depends_on:
       - db
     build:
+      args:
+        UID: ${UID:-1000}
       context: .
       dockerfile: Dockerfile.backend
     volumes:
