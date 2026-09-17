@@ -6,6 +6,7 @@ import {loadBwBookings, loadDrinks, loadMembers} from "../../utils/loadUtils.jsx
 import {deleteEntity, saveEntity} from "../../utils/crudUtils.jsx";
 import {getDrinkName, getMemberName} from "../../utils/namingUtils.jsx";
 import {FaRegFilePdf} from "react-icons/fa6";
+import {getCurrentLocalDateDaysAgo} from "../../utils/dateUtils.jsx";
 
 function BwBookingsTab() {
     const [bwBookings, setBwBookings] = useState([]);
@@ -13,8 +14,8 @@ function BwBookingsTab() {
     const [drinks, setDrinks] = useState([])
     const [selectedBwBooking, setSelectedBwBooking] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [dateFrom, setDateFrom] = useState("");
-    const [dateTo, setDateTo] = useState("");
+    const [dateFrom, setDateFrom] = useState(getCurrentLocalDateDaysAgo(14));
+    const [dateTo, setDateTo] = useState(getCurrentLocalDateDaysAgo(0));
 
     useEffect(() => {
         loadBwBookings(setBwBookings);
