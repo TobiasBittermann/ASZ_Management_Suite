@@ -1,0 +1,122 @@
+package de.tobi.asz_management_suite_api.bierwart.inventoryEntry;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+import java.math.BigDecimal;
+
+@Entity
+public class InventoryEntry {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    private long inventoryId;
+    private long drinkId;
+    private int initialQuantity;
+    private Integer quantity;
+    private Integer shrinkage;
+    private BigDecimal unitValue;
+    private BigDecimal totalValue;
+    private BigDecimal shrinkageValue;
+
+    public InventoryEntry() {
+    }
+
+    public InventoryEntry(InventoryEntry other) {
+        this.id = other.id;
+        this.inventoryId = other.inventoryId;
+        this.drinkId = other.drinkId;
+        this.initialQuantity = other.initialQuantity;
+        this.quantity = other.quantity;
+        this.shrinkage = other.shrinkage;
+        this.unitValue = other.unitValue;
+        this.totalValue = other.totalValue;
+        this.shrinkageValue = other.shrinkageValue;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getInventoryId() {
+        return inventoryId;
+    }
+
+    public void setInventoryId(long inventoryId) {
+        this.inventoryId = inventoryId;
+    }
+
+    public long getDrinkId() {
+        return drinkId;
+    }
+
+    public void setDrinkId(long drinkId) {
+        this.drinkId = drinkId;
+    }
+
+    public int getInitialQuantity() {
+        return initialQuantity;
+    }
+
+    public void setInitialQuantity(int initialQuantity) {
+        this.initialQuantity = initialQuantity;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public Integer getShrinkage() {
+        return shrinkage;
+    }
+
+    public void setShrinkage(Integer shrinkage) {
+        this.shrinkage = shrinkage;
+    }
+
+    public BigDecimal getUnitValue() {
+        return unitValue;
+    }
+
+    public void setUnitValue(BigDecimal unitValue) {
+        this.unitValue = unitValue;
+    }
+
+    public BigDecimal getTotalValue() {
+        return totalValue;
+    }
+
+    public void setTotalValue(BigDecimal totalValue) {
+        this.totalValue = totalValue;
+    }
+
+    public BigDecimal getShrinkageValue() {
+        return shrinkageValue;
+    }
+
+    public void setShrinkageValue(BigDecimal shrinkageValue) {
+        this.shrinkageValue = shrinkageValue;
+    }
+
+    public void updateFrom(InventoryEntry entry) {
+        this.id = entry.id;
+        this.inventoryId = entry.inventoryId;
+        this.drinkId = entry.drinkId;
+        this.initialQuantity = entry.initialQuantity;
+        this.quantity = entry.quantity;
+        this.shrinkage = entry.shrinkage;
+        this.unitValue = entry.unitValue;
+        this.totalValue = entry.totalValue;
+        this.shrinkageValue = entry.shrinkageValue;
+    }
+}
