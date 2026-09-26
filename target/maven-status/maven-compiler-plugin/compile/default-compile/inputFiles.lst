@@ -1,6 +1,8 @@
 /home/tobi/repos/ASZ_Management_Suite/src/main/java/de/tobi/asz_management_suite_api/AszInventoryApiApplication.java
 /home/tobi/repos/ASZ_Management_Suite/src/main/java/de/tobi/asz_management_suite_api/Login/credential/Credential.java
 /home/tobi/repos/ASZ_Management_Suite/src/main/java/de/tobi/asz_management_suite_api/Login/credential/CredentialRepository.java
+/home/tobi/repos/ASZ_Management_Suite/src/main/java/de/tobi/asz_management_suite_api/Login/credential/CredentialService.java
+/home/tobi/repos/ASZ_Management_Suite/src/main/java/de/tobi/asz_management_suite_api/Login/credential/WebAuthnCredentialRepository.java
 /home/tobi/repos/ASZ_Management_Suite/src/main/java/de/tobi/asz_management_suite_api/Login/registrationInvite/RegistrationInvite.java
 /home/tobi/repos/ASZ_Management_Suite/src/main/java/de/tobi/asz_management_suite_api/Login/registrationInvite/RegistrationInviteController.java
 /home/tobi/repos/ASZ_Management_Suite/src/main/java/de/tobi/asz_management_suite_api/Login/registrationInvite/RegistrationInviteRepository.java

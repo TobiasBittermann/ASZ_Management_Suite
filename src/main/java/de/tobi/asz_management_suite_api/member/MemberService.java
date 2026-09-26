@@ -20,6 +20,10 @@ public class MemberService {
         return repository.findById(id).orElseThrow();
     }
 
+    public Member getMemberByUserHandle(byte[] userHandle){return repository.findByUserHandle(userHandle).orElseThrow();}
+
+    public Member getMemberByEmail(String email){return repository.findByEmail(email).orElseThrow();}
+
     public List<Member> getAllMembers() {
         List<Member> members = repository.findAll();
         log.debug("MemberService loaded {} members.", members.size());

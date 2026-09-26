@@ -39,13 +39,24 @@ public class RegistrationInviteService {
         return invite;
     }
 
+    public RegistrationInvite validateInvite(String token) {
+        RegistrationInvite invite = repository.findByToken(token).orElseThrow(() -> new IllegalArgumentException("Invalid invite token"));
+        if (invite.isUsed()) {
+            throw new IllegalStateException("Invite already used");
+        }
+        if (invite.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("Invite expired");
+        }
+        return invite;
+    }
+
     @Transactional
     public RegistrationInvite redeemInvite(String token) {
         RegistrationInvite invite = repository.findByToken(token).orElseThrow(() -> new IllegalArgumentException("Invalid invite token"));
-        if(invite.isUsed()){
+        if (invite.isUsed()) {
             throw new IllegalStateException("Invite already used");
         }
-        if(invite.getExpiresAt().isBefore(LocalDateTime.now())){
+        if (invite.getExpiresAt().isBefore(LocalDateTime.now())) {
             throw new IllegalStateException("Invite expired");
         }
         invite.setUsed(true);
