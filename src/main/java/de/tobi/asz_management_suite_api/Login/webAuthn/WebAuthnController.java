@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -52,27 +53,21 @@ public class WebAuthnController {
     }
 
     @PostMapping("/register/finish")
-    public void finishRegistration(@RequestBody FinishRegistrationRequest request) throws RegistrationFailedException {
+    public void finishRegistration(@RequestBody FinishRegistrationRequest request) throws RegistrationFailedException, IOException {
         PublicKeyCredentialCreationOptions options = pendingRegistrations.get(request.token());
 
-        if(options == null){
+        if (options == null) {
             throw new IllegalStateException("No pending registration found");
         }
 
-        PublicKeyCredential<AuthenticatorAttestationResponse,ClientRegistrationExtensionOutputs> response;
-
-        try{
-            response = PublicKeyCredential.parseRegistrationResponseJson(request.response());
-        }
-        catch (Exception e){
-            throw new IllegalArgumentException("Invalid registration response", e);
-        }
-
+        PublicKeyCredential<AuthenticatorAttestationResponse, ClientRegistrationExtensionOutputs> response;
+        response = PublicKeyCredential.parseRegistrationResponseJson(request.response());
         RegistrationResult result = relyingParty.finishRegistration(FinishRegistrationOptions.builder().request(options).response(response).build());
     }
 
     public record StartRegistrationRequest(String token) {
     }
 
-    public record FinishRegistrationRequest(String token, String response){}
+    public record FinishRegistrationRequest(String token, String response) {
+    }
 }
