@@ -39,4 +39,8 @@ public class CredentialService {
         repository.deleteById(id);
         log.info("CredentialService deleted credential with id {}", id);
     }
+
+    public boolean hasAnyCredential(){
+        return repository.count() > 0;
+    }
 }

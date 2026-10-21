@@ -4,13 +4,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MemberService {
 
     private final MemberRepository repository;
     private static final Logger log = LoggerFactory.getLogger(MemberService.class);
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     public MemberService(MemberRepository repository) {
         this.repository = repository;
@@ -31,6 +34,10 @@ public class MemberService {
     }
 
     public void addMember(Member member) {
+        byte[] userHandle = new byte[32];
+        RANDOM.nextBytes(userHandle);
+        member.setUserHandle(userHandle);
+
         repository.save(member);
         log.info("MemberService added member {} {} with id {}.", member.getFirstName(), member.getLastName(), member.getId());
     }
@@ -47,5 +54,9 @@ public class MemberService {
         Member member = repository.findById(id).orElseThrow();
         repository.deleteById(id);
         log.info("MemberService deleted member {} {} with id {}.", member.getFirstName(), member.getLastName(), id);
+    }
+
+    public Optional<Member> findMemberByEmail(String email){
+        return repository.findByEmail(email);
     }
 }

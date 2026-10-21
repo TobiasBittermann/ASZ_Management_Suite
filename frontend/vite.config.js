@@ -18,6 +18,7 @@ export default defineConfig({
       "/bwsnapshots" : "http://localhost:8080",
       "/account-types" : "http://localhost:8080",
       "/reports" : "http://localhost:8080",
+      "/webauthn": "http://localhost:8080",
     }
   }
 })
