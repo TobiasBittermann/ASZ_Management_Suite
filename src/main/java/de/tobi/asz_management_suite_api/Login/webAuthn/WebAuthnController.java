@@ -48,7 +48,7 @@ public class WebAuthnController {
     }
 
     @PostMapping("/register/start")
-    public PublicKeyCredentialCreationOptions startRegistration(@RequestBody StartRegistrationRequest request) {
+    public RegistrationStartResponse startRegistration(@RequestBody StartRegistrationRequest request) throws JsonProcessingException {
         RegistrationInvite invite = inviteService.validateInvite(request.token());
         Member member = invite.getMember();
 
@@ -61,11 +61,15 @@ public class WebAuthnController {
         PublicKeyCredentialCreationOptions options = relyingParty.startRegistration(
                 StartRegistrationOptions.builder()
                         .user(userIdentity)
+                        .authenticatorSelection(AuthenticatorSelectionCriteria.builder()
+                                .residentKey(ResidentKeyRequirement.REQUIRED)
+                                .userVerification(UserVerificationRequirement.REQUIRED)
+                                .build())
                         .build()
         );
 
         pendingRegistrations.put(request.token(), options);
-        return options;
+        return new RegistrationStartResponse(options.toCredentialsCreateJson());
     }
 
     @PostMapping("/register/finish")
@@ -104,10 +108,10 @@ public class WebAuthnController {
     }
 
     @PostMapping("/login/finish")
-    public String finishLogin(@RequestBody LoginFinishRequest request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, AssertionFailedException{
+    public String finishLogin(@RequestBody LoginFinishRequest request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException, AssertionFailedException {
         AssertionRequest assertionRequest = pendingAssertions.remove(request.requestId());
 
-        if(assertionRequest == null){
+        if (assertionRequest == null) {
             throw new IllegalStateException("No pending login found");
         }
 
@@ -115,13 +119,13 @@ public class WebAuthnController {
 
         AssertionResult result = relyingParty.finishAssertion(FinishAssertionOptions.builder().request(assertionRequest).response(response).build());
 
-        if(!result.isSuccess()){
+        if (!result.isSuccess()) {
             throw new IllegalStateException("Login failed");
         }
 
         Credential credential = credentialService.getCredentialById(result.getCredential().getCredentialId().getBytes());
 
-        if (credential.getRevokedAt() != null){
+        if (credential.getRevokedAt() != null) {
             throw new IllegalStateException("Credential revoked");
         }
 
@@ -135,7 +139,7 @@ public class WebAuthnController {
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
 
-        if(httpRequest.getSession(false) != null){
+        if (httpRequest.getSession(false) != null) {
             httpRequest.changeSessionId();
         }
         securityContextRepository.saveContext(context, httpRequest, httpResponse);
@@ -152,7 +156,10 @@ public class WebAuthnController {
     public record LoginStartResponse(String requestId, @JsonRawValue String options) {
     }
 
-    public record LoginFinishRequest (String requestId, String response){
+    public record LoginFinishRequest(String requestId, String response) {
 
+    }
+
+    public record RegistrationStartResponse(@JsonRawValue String options) {
     }
 }

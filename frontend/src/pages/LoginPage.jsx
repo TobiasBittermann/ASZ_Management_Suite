@@ -1,5 +1,5 @@
 import {Link} from "react-router-dom"
-import houseImage from "../assets/ASZ_Freiburg_Haus.JPG"
+import houseImage from "../assets/ASZ_Freiburg_Haus.jpg"
 
 function LoginPage() {
     return (

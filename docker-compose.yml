@@ -12,6 +12,9 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/asz_management_suite
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      APP_ADMIN_EMAIL: ${ADMIN_EMAIL}
+      APP_ADMIN_FIRST_NAME: ${ADMIN_FIRST_NAME}
+      APP_ADMIN_LAST_NAME: ${ADMIN_LAST_NAME}
 
   db:
     image: postgres:16
