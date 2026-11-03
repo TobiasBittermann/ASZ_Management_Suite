@@ -27,7 +27,7 @@ public class Member {
     private Address address;
     private String phone;
     private String email;
-    private BigDecimal balance;
+    private BigDecimal balance = BigDecimal.ZERO;
     private boolean sepaBw;
     private String iban;
     //doj - date of joining
