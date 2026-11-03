@@ -32,7 +32,9 @@ bin/
 ### Java Project
 CSV/
 logs/
+dbBackups/
 .idea/
 .iml
 application-local.properties
 .env
+target/
