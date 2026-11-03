@@ -1,6 +1,6 @@
 import './App.css'
 import {BrowserRouter, Routes, Route} from "react-router-dom"
-import LoginPage from "./pages/LoginPage.jsx"
+import LoginPage from "./pages/LoginPage.tsx"
 import MembersPage from "./pages/MembersPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import AppLayout from "./components/layout/AppLayout.jsx";
@@ -11,6 +11,7 @@ import DepositsPage from "./pages/Bierwart/DepositsPage.jsx";
 import SnapshotsPage from "./pages/Bierwart/SnapshotsPage.jsx";
 import VendorsPage from "./pages/Bierwart/VendorsPage.jsx";
 import InventoryPage from "./pages/Bierwart/InventoryPage.jsx";
+import RegisterPage from "./pages/RegisterPage.tsx";
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<LoginPage/>}/>
+                <Route path="/register" element={<RegisterPage/>}/>
 
                 <Route element={<AppLayout/>}>
                     <Route path={"/home"} element={<HomePage/>}/>
@@ -30,6 +32,7 @@ function App() {
                     <Route path={"/bierwart/snapshots"} element={<SnapshotsPage/>}/>
                     <Route path={"/bierwart/vendors"} element={<VendorsPage/>}/>
                     <Route path={"/bierwart/inventories"} element={<InventoryPage/>}/>
+
                 </Route>
             </Routes>
         </BrowserRouter>
