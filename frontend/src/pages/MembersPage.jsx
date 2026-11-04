@@ -7,9 +7,13 @@ function MembersPage() {
     const [members, setMembers] = useState([]);
     const [selectedMember, setSelectedMember] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [statusOptions, setStatusOptions] = useState([])
 
     useEffect(() => {
         loadMembers();
+        fetch("/enums/status")
+            .then(res => res.json())
+            .then(setStatusOptions)
     }, [])
 
     async function loadMembers() {
@@ -67,6 +71,10 @@ function MembersPage() {
         await loadMembers();
     }
 
+    function getStatusLabel(value){
+        return statusOptions.find(option => option.value === value)?.label ?? value ?? "";
+    }
+
     return (
         <div>
             <h1 className={"text-3xl font-bold text-gray-800 text-center"}>
@@ -96,6 +104,7 @@ function MembersPage() {
                     <thead className={"bg-gray-200 text-gray-600 uppercase text-xs"}>
                     <tr>
                         <th className={"px-6 py-3"}>Id</th>
+                        <th className={"px-6 py-3"}>Status</th>
                         <th className={"px-6 py-3"}>Vorname</th>
                         <th className={"px-6 py-3"}>Nachname</th>
                         <th className={"px-6 py-3"}>E-Mail</th>
@@ -107,6 +116,7 @@ function MembersPage() {
                     {members.map((member) => (
                         <tr key={member.id} className={"hover:bg-gray-50 transition"}>
                             <td className={"px-6 py-3"}>{member.id}</td>
+                            <td className={"px-6 py-3"}>{getStatusLabel(member.status)}</td>
                             <td className={"px-6 py-3"}>{member.firstName}</td>
                             <td className={"px-6 py-3"}>{member.lastName}</td>
                             <td className={"px-6 py-3"}>{member.email}</td>

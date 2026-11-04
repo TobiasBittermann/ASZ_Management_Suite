@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: de.tobi.asz_management_suite_api.bierwart.drink.DrinkServiceTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.977 s -- in de.tobi.asz_management_suite_api.bierwart.drink.DrinkServiceTest

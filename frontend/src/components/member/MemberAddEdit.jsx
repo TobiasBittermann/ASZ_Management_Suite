@@ -4,6 +4,8 @@ function MemberAddEdit({member, onClose, onSave}) {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
+    const [status, setStatus] = useState(null);
+    const [statusOptions, setStatusOptions] = useState([]);
     const [balance, setBalance] = useState("");
 
     useEffect(() => {
@@ -12,14 +14,22 @@ function MemberAddEdit({member, onClose, onSave}) {
             setFirstName(member.firstName)
             setLastName(member.lastName)
             setEmail(member.email)
+            setStatus(member.status ?? "")
             setBalance(member.balance)
         } else {
             setFirstName("")
             setLastName("")
             setEmail("")
+            setStatus("")
             setBalance("")
         }
     }, [member]);
+
+    useEffect(() => {
+        fetch(`/enums/status`)
+            .then(res => res.json())
+            .then(setStatusOptions)
+    }, [])
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -29,6 +39,7 @@ function MemberAddEdit({member, onClose, onSave}) {
             firstName,
             lastName,
             email,
+            status: status || null,
             balance: Number(balance)
         }
 
@@ -46,42 +57,57 @@ function MemberAddEdit({member, onClose, onSave}) {
                 <form
                     className={"grid grid-cols-[auto_1fr] items-center gab-x-4 gap-y-4"}
                     onSubmit={handleSubmit}>
-                        <label className={"text-sm font-medium text-gray-600 justify-self-start mr-2"}>
-                            Vorname:
-                        </label>
-                        <input
-                            className={"border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"}
-                            type={"text"}
-                            value={firstName}
-                            onChange={(event) => setFirstName(event.target.value)}
-                        />
-                        <label className={"text-sm font-medium text-gray-600 justify-self-start mr-2"}>
-                            Nachname:
-                        </label>
-                        <input
-                            className={"border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"}
-                            type={"text"}
-                            value={lastName}
-                            onChange={(event) => setLastName(event.target.value)}
-                        />
-                        <label className={"text-sm font-medium text-gray-600 justify-self-start mr-2"}>
-                            E-Mail:
-                        </label>
-                        <input
-                            className={"border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"}
-                            type={"text"}
-                            value={email}
-                            onChange={(event) => setEmail(event.target.value)}
-                        />
-                        <label className={"text-sm font-medium text-gray-600 justify-self-start mr-2"}>
-                            Kontostand:
-                        </label>
-                        <input
-                            className={"border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"}
-                            type={"number"}
-                            value={balance}
-                            onChange={(event) => setBalance(event.target.value)}
-                        />
+                    <label className={"text-sm font-medium text-gray-600 justify-self-start mr-2"}>
+                        Vorname:
+                    </label>
+                    <input
+                        className={"border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"}
+                        type={"text"}
+                        value={firstName}
+                        onChange={(event) => setFirstName(event.target.value)}
+                    />
+                    <label className={"text-sm font-medium text-gray-600 justify-self-start mr-2"}>
+                        Nachname:
+                    </label>
+                    <input
+                        className={"border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"}
+                        type={"text"}
+                        value={lastName}
+                        onChange={(event) => setLastName(event.target.value)}
+                    />
+                    <label className={"text-sm font-medium text-gray-600 justify-self-start mr-2"}>
+                        E-Mail:
+                    </label>
+                    <input
+                        className={"border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"}
+                        type={"text"}
+                        value={email}
+                        onChange={(event) => setEmail(event.target.value)}
+                    />
+                    <label className={"text-sm font-medium text-gray-600 justify-self-start mr-2"}>
+                        Status:
+                    </label>
+                    <select
+                        className={"border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"}
+                        value={status}
+                        onChange={(event) => setStatus((event.target.value))}
+                    >
+                        <option value="">Bitte wählen</option>
+                        {statusOptions.map(option => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                    <label className={"text-sm font-medium text-gray-600 justify-self-start mr-2"}>
+                        Kontostand:
+                    </label>
+                    <input
+                        className={"border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"}
+                        type={"number"}
+                        value={balance}
+                        onChange={(event) => setBalance(event.target.value)}
+                    />
                     <div className={"col-span-2 flex justify-end gab-3 mt-2"}>
                         <button
                             className={"hover:bg-green-500 hover:scale-105 bg-green-300 text-black shadow-md rounded px-6 py-2 m-1 transition"}
