@@ -1,5 +1,5 @@
 import {Outlet} from "react-router-dom";
-import Sidebar from "./SideBar.jsx";
+import Sidebar from "./SideBar.tsx";
 
 function AppLayout(){
     return (

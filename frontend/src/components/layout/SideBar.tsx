@@ -1,10 +1,28 @@
-import {useState} from "react";
-import {Link} from "react-router-dom";
-import {FiHome, FiUsers, FiChevronDown, FiUser} from "react-icons/fi";
+import {useEffect, useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
+import {FiHome, FiUsers, FiChevronDown, FiLogOut} from "react-icons/fi";
 import {BiBeer} from "react-icons/bi";
+
+type CurrentMember = {
+    firstName: string;
+    lastName: string;
+};
 
 function Sidebar() {
     const [bierwartOpen, setBierwartOpen] = useState(false);
+    const [member, setMember] = useState<CurrentMember | null>(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        fetch("/members/me")
+            .then(response => response.ok ? response.json() : null)
+            .then(data => setMember(data));
+    }, []);
+
+    async function logout() {
+        await fetch("/webauthn/logout", {method: "POST"});
+        navigate("/");
+    }
 
     return (
         <aside className="h-screen w-64 bg-gray-800 text-white flex flex-col">
@@ -29,11 +47,11 @@ function Sidebar() {
                 </Link>
 
                 <button
-                onClick={()=> setBierwartOpen(!bierwartOpen)}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-green-700 transition"
+                    onClick={() => setBierwartOpen(!bierwartOpen)}
+                    className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-green-700 transition"
                 >
                     <div className="flex items-center gap-3">
-                        <BiBeer />
+                        <BiBeer/>
                         <span>Bierwart</span>
                     </div>
 
@@ -47,7 +65,7 @@ function Sidebar() {
                 {bierwartOpen &&
                     <div className={"ml-9 mt-1 space-y-1"}>
                         <Link to={"/bierwart/snapshots"}
-                        className={"block px-3 py-2 rounded-lg hover:bg-green-700 transition"}>
+                              className={"block px-3 py-2 rounded-lg hover:bg-green-700 transition"}>
                             Übersicht
                         </Link>
 
@@ -85,6 +103,22 @@ function Sidebar() {
                 }
 
             </nav>
+
+            {member && (
+                <div className={"flex items-center gap-3 p-4 border-t border-gray-700"}>
+                    <div className={"w-10 h-10 shrink-0 rounded-full bg-green-700 flex items-center justify-center font-bold"}>
+                        {member.firstName[0]}{member.lastName[0]}
+                    </div>
+                    <span className={"flex-1 truncate"}>
+                        {member.firstName} {member.lastName}
+                    </span>
+                    <button onClick={logout}
+                            title={"Logout"}
+                            className={"p-2 rounded-lg hover:bg-green-700 transition"}>
+                        <FiLogOut/>
+                    </button>
+                </div>
+            )}
         </aside>
     );
 }

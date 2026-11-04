@@ -1,11 +1,12 @@
 import {useEffect, useState} from "react";
 import MemberAddEdit from "../components/member/MemberAddEdit.jsx";
-import {FiEdit3, FiPlusCircle, FiTrash2} from "react-icons/fi";
+import {FiEdit3, FiPlusCircle, FiSend, FiTrash2} from "react-icons/fi";
 import {Tooltip} from "react-tooltip";
+import {Member} from "../types/Member";
 
 function MembersPage() {
-    const [members, setMembers] = useState([]);
-    const [selectedMember, setSelectedMember] = useState(null)
+    const [members, setMembers] = useState<Member[]>([]);
+    const [selectedMember, setSelectedMember] = useState<Member|null>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
 
     useEffect(() => {
@@ -23,7 +24,7 @@ function MembersPage() {
         setMembers(data);
     }
 
-    async function handleSaveMember(member) {
+    async function handleSaveMember(member: Member) {
         const isEditMode = member.id && member.id > 0;
         const url = isEditMode
             ? `/members/${member.id}`
@@ -46,7 +47,7 @@ function MembersPage() {
         await loadMembers();
     }
 
-    function handleEditClick(member) {
+    function handleEditClick(member: Member) {
         setSelectedMember(member);
         setIsModalOpen(true);
     }
@@ -56,7 +57,7 @@ function MembersPage() {
         setIsModalOpen(true);
     }
 
-    async function handleDeleteMember(id) {
+    async function handleDeleteMember(id: number) {
         const response = await fetch(`/members/${id}`, {
             method: "DELETE"
         });
@@ -65,6 +66,20 @@ function MembersPage() {
         }
 
         await loadMembers();
+    }
+
+    async function handleInviteMember(member: Member){
+        const response = await fetch(`/members/${member.id}/invite`, {
+            method: "POST"
+        });
+        if(!response.ok){
+            alert("Einladung konnte nicht erstellt werden");
+            return;
+        }
+
+        const {link} = await response.json();
+        await navigator.clipboard.writeText(link);
+        alert(`Einladungslink für ${member.firstName} ${member.lastName} wurde kopiert (24h gültig).`)
     }
 
     return (
@@ -126,6 +141,13 @@ function MembersPage() {
                                     onClick={() => handleDeleteMember(member.id)}>
                                     <FiTrash2/>
                                 </button>
+                                <button
+                                    className={"hover:bg-green-500 hover:scale-105 bg-green-300 text-black shadow-md rounded px-3 py-1 m-1 transition"}
+                                data-tooltip-id={"invite-tip"}
+                                data-tooltip-content={"Einladungslink erstellen"}
+                                onClick={() => handleInviteMember(member)}>
+                                    <FiSend/>
+                                </button>
                             </td>
                         </tr>
                     ))}
@@ -133,6 +155,7 @@ function MembersPage() {
                 </table>
                 <Tooltip id={"edit-tip"}/>
                 <Tooltip id={"delete-tip"}/>
+                <Tooltip id={"invite-tip"}/>
             </div>
         </div>
     );
