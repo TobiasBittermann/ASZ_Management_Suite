@@ -21,8 +21,8 @@ function BookingsPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [dateFrom, setDateFrom] = useState(getCurrentLocalDateDaysAgo(14));
     const [dateTo, setDateTo] = useState(getCurrentLocalDateDaysAgo(0));
-    const [sortKey, setSortKey] = useState<SortKey>("id")
-    const [sortAsc, setSortAsc] = useState(true)
+    const [sortKey, setSortKey] = useState<SortKey>("date")
+    const [sortAsc, setSortAsc] = useState(false)
     const [search, setSearch] = useState("")
 
     useEffect(() => {
