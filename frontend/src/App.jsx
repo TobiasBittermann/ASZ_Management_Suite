@@ -6,7 +6,7 @@ import HomePage from "./pages/HomePage.jsx";
 import AppLayout from "./components/layout/AppLayout.jsx";
 import DrinksPage from "./pages/Bierwart/DrinksPage.jsx";
 import AccountBookingsPage from "./pages/Bierwart/AccountBookingsPage.jsx";
-import BookingsPage from "./pages/Bierwart/BookingsPage.jsx";
+import BookingsPage from "./pages/Bierwart/BookingsPage.tsx";
 import DepositsPage from "./pages/Bierwart/DepositsPage.jsx";
 import SnapshotsPage from "./pages/Bierwart/SnapshotsPage.jsx";
 import VendorsPage from "./pages/Bierwart/VendorsPage.jsx";

@@ -56,7 +56,7 @@ public class BookingsReportService {
     Color red = new Color(255, 0, 0);
 
     // Fonts
-    int size = 9;
+    int size = 7;
     Font titleFont = new Font(Font.HELVETICA, 15, Font.BOLD);
     Font headerWhiteFont = new Font(Font.HELVETICA, size, Font.BOLD, white);
     Font blackFont = new Font(Font.HELVETICA, size, Font.NORMAL, black);
@@ -65,6 +65,7 @@ public class BookingsReportService {
 
     public List<Member> loadSortedMembers() throws IOException {
         List<Member> members = memberService.getAllMembers().stream()
+                .filter(m -> Boolean.TRUE.equals(m.getShowInBeerlist()))
                 .sorted(Comparator
                         .comparing(Member::getLastName)
                         .thenComparing(Member::getFirstName))
