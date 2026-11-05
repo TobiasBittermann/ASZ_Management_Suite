@@ -44,6 +44,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     @JsonManagedReference
     private List<Position> positions;
+    private Boolean showInBeerlist = false;
 
     public Member() {
     }
@@ -67,6 +68,7 @@ public class Member {
         this.foundingMember = other.foundingMember;
         this.status = other.status;
         this.positions = other.positions;
+        this.showInBeerlist = other.showInBeerlist;
     }
 
     public long getId() {
@@ -213,6 +215,14 @@ public class Member {
         this.positions = positions;
     }
 
+    public Boolean getShowInBeerlist() {
+        return showInBeerlist;
+    }
+
+    public void setShowInBeerlist(Boolean showInBeerlist) {
+        this.showInBeerlist = showInBeerlist;
+    }
+
     public void updateFrom(Member member) {
         this.academicDegree = member.academicDegree;
         this.firstName = member.firstName;
@@ -231,5 +241,6 @@ public class Member {
         this.foundingMember = member.foundingMember;
         this.status = member.status;
         this.positions = member.positions;
+        this.showInBeerlist = member.showInBeerlist;
     }
 }

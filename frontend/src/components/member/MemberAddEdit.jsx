@@ -7,6 +7,7 @@ function MemberAddEdit({member, onClose, onSave}) {
     const [status, setStatus] = useState(null);
     const [statusOptions, setStatusOptions] = useState([]);
     const [balance, setBalance] = useState("");
+    const [showInBeerlist, setShowInBeerlist] = useState(false)
 
     useEffect(() => {
         if (member) {
@@ -16,12 +17,14 @@ function MemberAddEdit({member, onClose, onSave}) {
             setEmail(member.email)
             setStatus(member.status ?? "")
             setBalance(member.balance)
+            setShowInBeerlist(member.showInBeerlist)
         } else {
             setFirstName("")
             setLastName("")
             setEmail("")
             setStatus("")
             setBalance("")
+            setShowInBeerlist(false)
         }
     }, [member]);
 
@@ -40,7 +43,8 @@ function MemberAddEdit({member, onClose, onSave}) {
             lastName,
             email,
             status: status || null,
-            balance: Number(balance)
+            balance: Number(balance),
+            showInBeerlist: showInBeerlist
         }
 
         await onSave(savedMember)
@@ -108,6 +112,12 @@ function MemberAddEdit({member, onClose, onSave}) {
                         value={balance}
                         onChange={(event) => setBalance(event.target.value)}
                     />
+                    <label className={"text-sm font-medium text-gray-600 justify-self-start mr-2"}>
+                        Member in Bierliste anzeigen:
+                    </label>
+                    <select>
+
+                    </select>
                     <div className={"col-span-2 flex justify-end gab-3 mt-2"}>
                         <button
                             className={"hover:bg-green-500 hover:scale-105 bg-green-300 text-black shadow-md rounded px-6 py-2 m-1 transition"}

@@ -8,6 +8,8 @@ function MembersPage() {
     const [selectedMember, setSelectedMember] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [statusOptions, setStatusOptions] = useState([])
+    const [sortKey, setSortKey] = useState("lastName")
+    const [sortAsc, setSortAsc] = useState(true)
 
     useEffect(() => {
         loadMembers();
@@ -71,8 +73,33 @@ function MembersPage() {
         await loadMembers();
     }
 
-    function getStatusLabel(value){
+    function getStatusLabel(value) {
         return statusOptions.find(option => option.value === value)?.label ?? value ?? "";
+    }
+
+    function handleSort(key) {
+        if (key === sortKey) {
+            setSortAsc(!sortAsc);
+        } else {
+            setSortKey(key);
+            setSortAsc(true);
+        }
+    }
+
+    const sortedMembers = [...members].sort((a,b) =>{
+        const valueA = sortKey === "status" ? getStatusLabel(a.status) : a[sortKey];
+        const valueB = sortKey === "status" ? getStatusLabel(b.status) : b[sortKey];
+
+        if(valueA == null) return 1;
+        if(valueB == null) return -1;
+
+        const result = typeof valueA === "number" ? valueA - valueB : String(valueA).localeCompare(String(valueB), "de");
+
+        return sortAsc ? result : -result
+    });
+
+    function sortArrow(key){
+        return sortKey === key ? (sortAsc ? " ▲" : " ▼") : "";
     }
 
     return (
@@ -103,17 +130,17 @@ function MembersPage() {
                 <table className={"min-w-full bg-white text-sm text-left"}>
                     <thead className={"bg-gray-200 text-gray-600 uppercase text-xs"}>
                     <tr>
-                        <th className={"px-6 py-3"}>Id</th>
-                        <th className={"px-6 py-3"}>Status</th>
-                        <th className={"px-6 py-3"}>Vorname</th>
-                        <th className={"px-6 py-3"}>Nachname</th>
-                        <th className={"px-6 py-3"}>E-Mail</th>
-                        <th className={"px-6 py-3"}>Kontostand</th>
-                        <th className={"px-6 py-3"}>Aktionen</th>
+                        <th className={"px-6 py-3 cursor-pointer select-none"} onClick={()=> handleSort("id")}>Id{sortArrow("id")}</th>
+                        <th className={"px-6 py-3 cursor-pointer select-none"} onClick={()=> handleSort("status")}>Status{sortArrow("status")}</th>
+                        <th className={"px-6 py-3 cursor-pointer select-none"} onClick={()=> handleSort("firstName")}>Vorname{sortArrow("firstName")}</th>
+                        <th className={"px-6 py-3 cursor-pointer select-none"} onClick={()=> handleSort("lastName")}>Nachname{sortArrow("lastName")}</th>
+                        <th className={"px-6 py-3 cursor-pointer select-none"} onClick={()=> handleSort("email")}>E-Mail{sortArrow("email")}</th>
+                        <th className={"px-6 py-3 cursor-pointer select-none"} onClick={()=> handleSort("balance")}>Kontostand{sortArrow("balance")}</th>
+                        <th className={"px-6 py-3 cursor-pointer select-none"}>Aktionen</th>
                     </tr>
                     </thead>
                     <tbody className={"divide-y divide-gray-100"}>
-                    {members.map((member) => (
+                    {sortedMembers.map((member) => (
                         <tr key={member.id} className={"hover:bg-gray-50 transition"}>
                             <td className={"px-6 py-3"}>{member.id}</td>
                             <td className={"px-6 py-3"}>{getStatusLabel(member.status)}</td>
