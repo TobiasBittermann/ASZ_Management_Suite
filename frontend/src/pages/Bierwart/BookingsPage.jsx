@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {FiEdit3, FiPlusCircle, FiTrash2} from "react-icons/fi";
 import {Tooltip} from "react-tooltip";
-import BwBookingAddEdit from "../../components/bierwart/BwBookingAddEdit.jsx";
+import BwBookingAddEdit from "../../components/bierwart/BwBookingAddEdit.tsx";
 import {loadBwBookings, loadDrinks, loadMembers} from "../../utils/loadUtils.jsx";
 import {deleteEntity, saveEntity} from "../../utils/crudUtils.jsx";
 import {getDrinkName, getMemberName} from "../../utils/namingUtils.jsx";
