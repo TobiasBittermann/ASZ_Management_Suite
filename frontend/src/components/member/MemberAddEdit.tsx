@@ -1,11 +1,19 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState, type FormEvent} from "react";
+import type {Member} from "../../types/Member.ts";
+import type {StatusOption} from "../../types/StatusOption.ts";
 
-function MemberAddEdit({member, onClose, onSave}) {
+type MemberAddEditProps = {
+    member: Member | null;
+    onClose: () => void;
+    onSave: (member: Member) => Promise<void>;
+}
+
+function MemberAddEdit({member, onClose, onSave}: MemberAddEditProps) {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
-    const [status, setStatus] = useState(null);
-    const [statusOptions, setStatusOptions] = useState([]);
+    const [status, setStatus] = useState("");
+    const [statusOptions, setStatusOptions] = useState<StatusOption[]>([]);
     const [balance, setBalance] = useState("");
     const [showInBeerlist, setShowInBeerlist] = useState(false)
 
@@ -16,7 +24,7 @@ function MemberAddEdit({member, onClose, onSave}) {
             setLastName(member.lastName)
             setEmail(member.email)
             setStatus(member.status ?? "")
-            setBalance(member.balance)
+            setBalance(member.balance?.toString() ?? "")
             setShowInBeerlist(member.showInBeerlist)
         } else {
             setFirstName("")
@@ -34,10 +42,10 @@ function MemberAddEdit({member, onClose, onSave}) {
             .then(setStatusOptions)
     }, [])
 
-    async function handleSubmit(event) {
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        const savedMember = {
+        const savedMember: Member = {
             id: member ? member.id : 0,
             firstName,
             lastName,
@@ -115,8 +123,13 @@ function MemberAddEdit({member, onClose, onSave}) {
                     <label className={"text-sm font-medium text-gray-600 justify-self-start mr-2"}>
                         Member in Bierliste anzeigen:
                     </label>
-                    <select>
-
+                    <select
+                        className={"border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"}
+                        value={String(showInBeerlist)}
+                        onChange={(event) => setShowInBeerlist(event.target.value === "true")}
+                    >
+                        <option value={"true"}>Ja</option>
+                        <option value={"false"}>Nein</option>
                     </select>
                     <div className={"col-span-2 flex justify-end gab-3 mt-2"}>
                         <button

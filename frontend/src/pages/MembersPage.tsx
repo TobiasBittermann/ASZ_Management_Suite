@@ -1,15 +1,20 @@
 import {useEffect, useState} from "react";
-import MemberAddEdit from "../components/member/MemberAddEdit.jsx";
+import MemberAddEdit from "../components/member/MemberAddEdit.tsx";
 import {FiEdit3, FiPlusCircle, FiTrash2} from "react-icons/fi";
 import {Tooltip} from "react-tooltip";
+import type {Member} from "../types/Member.ts";
+import type {StatusOption} from "../types/StatusOption.ts";
+
+type SortKey = "id" | "status" | "firstName" | "lastName" | "email" | "balance";
 
 function MembersPage() {
-    const [members, setMembers] = useState([]);
-    const [selectedMember, setSelectedMember] = useState(null)
+    const [members, setMembers] = useState<Member[]>([]);
+    const [selectedMember, setSelectedMember] = useState<Member | null>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [statusOptions, setStatusOptions] = useState([])
-    const [sortKey, setSortKey] = useState("lastName")
+    const [statusOptions, setStatusOptions] = useState<StatusOption[]>([])
+    const [sortKey, setSortKey] = useState<SortKey>("lastName")
     const [sortAsc, setSortAsc] = useState(true)
+    const [search, setSearch] = useState("")
 
     useEffect(() => {
         loadMembers();
@@ -29,7 +34,7 @@ function MembersPage() {
         setMembers(data);
     }
 
-    async function handleSaveMember(member) {
+    async function handleSaveMember(member: Member) {
         const isEditMode = member.id && member.id > 0;
         const url = isEditMode
             ? `/members/${member.id}`
@@ -52,7 +57,7 @@ function MembersPage() {
         await loadMembers();
     }
 
-    function handleEditClick(member) {
+    function handleEditClick(member: Member) {
         setSelectedMember(member);
         setIsModalOpen(true);
     }
@@ -62,7 +67,7 @@ function MembersPage() {
         setIsModalOpen(true);
     }
 
-    async function handleDeleteMember(id) {
+    async function handleDeleteMember(id: number) {
         const response = await fetch(`/members/${id}`, {
             method: "DELETE"
         });
@@ -73,11 +78,11 @@ function MembersPage() {
         await loadMembers();
     }
 
-    function getStatusLabel(value) {
+    function getStatusLabel(value: string | null) {
         return statusOptions.find(option => option.value === value)?.label ?? value ?? "";
     }
 
-    function handleSort(key) {
+    function handleSort(key: SortKey) {
         if (key === sortKey) {
             setSortAsc(!sortAsc);
         } else {
@@ -86,21 +91,25 @@ function MembersPage() {
         }
     }
 
-    const sortedMembers = [...members].sort((a,b) =>{
+    const term = search.trim().toLowerCase();
+    const filteredMembers = members.filter(member => [member.firstName, member.lastName, member.email].some(value => value?.toLowerCase().includes(term)));
+
+    const sortedMembers = filteredMembers.sort((a, b) => {
         const valueA = sortKey === "status" ? getStatusLabel(a.status) : a[sortKey];
         const valueB = sortKey === "status" ? getStatusLabel(b.status) : b[sortKey];
 
-        if(valueA == null) return 1;
-        if(valueB == null) return -1;
+        if (valueA == null) return 1;
+        if (valueB == null) return -1;
 
-        const result = typeof valueA === "number" ? valueA - valueB : String(valueA).localeCompare(String(valueB), "de");
+        const result = typeof valueA === "number" && typeof valueB === "number" ? valueA - valueB : String(valueA).localeCompare(String(valueB), "de");
 
         return sortAsc ? result : -result
     });
 
-    function sortArrow(key){
+    function sortArrow(key: SortKey) {
         return sortKey === key ? (sortAsc ? " ▲" : " ▼") : "";
     }
+
 
     return (
         <div>
@@ -117,6 +126,14 @@ function MembersPage() {
             </button>
             <Tooltip id={"add-tip"}/>
 
+            <input
+                className={"border border-gray-300 rounded-lg px-3 py-2 m-3 focus:outline-none focus:ring-2 focus:ring-blue-400"}
+                type={"text"}
+                placeholder={"Mitglied suchen"}
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+            />
+
             {isModalOpen && (
                 <MemberAddEdit
                     member={selectedMember}
@@ -130,12 +147,18 @@ function MembersPage() {
                 <table className={"min-w-full bg-white text-sm text-left"}>
                     <thead className={"bg-gray-200 text-gray-600 uppercase text-xs"}>
                     <tr>
-                        <th className={"px-6 py-3 cursor-pointer select-none"} onClick={()=> handleSort("id")}>Id{sortArrow("id")}</th>
-                        <th className={"px-6 py-3 cursor-pointer select-none"} onClick={()=> handleSort("status")}>Status{sortArrow("status")}</th>
-                        <th className={"px-6 py-3 cursor-pointer select-none"} onClick={()=> handleSort("firstName")}>Vorname{sortArrow("firstName")}</th>
-                        <th className={"px-6 py-3 cursor-pointer select-none"} onClick={()=> handleSort("lastName")}>Nachname{sortArrow("lastName")}</th>
-                        <th className={"px-6 py-3 cursor-pointer select-none"} onClick={()=> handleSort("email")}>E-Mail{sortArrow("email")}</th>
-                        <th className={"px-6 py-3 cursor-pointer select-none"} onClick={()=> handleSort("balance")}>Kontostand{sortArrow("balance")}</th>
+                        <th className={"px-6 py-3 cursor-pointer select-none"}
+                            onClick={() => handleSort("id")}>Id{sortArrow("id")}</th>
+                        <th className={"px-6 py-3 cursor-pointer select-none"}
+                            onClick={() => handleSort("status")}>Status{sortArrow("status")}</th>
+                        <th className={"px-6 py-3 cursor-pointer select-none"}
+                            onClick={() => handleSort("firstName")}>Vorname{sortArrow("firstName")}</th>
+                        <th className={"px-6 py-3 cursor-pointer select-none"}
+                            onClick={() => handleSort("lastName")}>Nachname{sortArrow("lastName")}</th>
+                        <th className={"px-6 py-3 cursor-pointer select-none"}
+                            onClick={() => handleSort("email")}>E-Mail{sortArrow("email")}</th>
+                        <th className={"px-6 py-3 cursor-pointer select-none"}
+                            onClick={() => handleSort("balance")}>Kontostand{sortArrow("balance")}</th>
                         <th className={"px-6 py-3 cursor-pointer select-none"}>Aktionen</th>
                     </tr>
                     </thead>

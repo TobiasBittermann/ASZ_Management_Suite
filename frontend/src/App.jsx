@@ -1,7 +1,7 @@
 import './App.css'
 import {BrowserRouter, Routes, Route} from "react-router-dom"
 import LoginPage from "./pages/LoginPage.jsx"
-import MembersPage from "./pages/MembersPage.jsx";
+import MembersPage from "./pages/MembersPage.tsx";
 import HomePage from "./pages/HomePage.jsx";
 import AppLayout from "./components/layout/AppLayout.jsx";
 import DrinksPage from "./pages/Bierwart/DrinksPage.jsx";
