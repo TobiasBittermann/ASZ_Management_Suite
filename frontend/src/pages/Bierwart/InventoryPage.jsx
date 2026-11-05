@@ -5,8 +5,8 @@ import {FiEdit3, FiPlusCircle, FiTrash2} from "react-icons/fi";
 import {Tooltip} from "react-tooltip";
 import InventoryAdd from "../../components/bierwart/InventoryAdd.jsx";
 import {getMemberName} from "../../utils/namingUtils.jsx";
-import InventoryEdit from "../../components/bierwart/InventoryEdit.jsx";
-import InventoryShow from "../../components/bierwart/InventoryShow.jsx";
+import InventoryEdit from "../../components/bierwart/InventoryEdit.tsx";
+import InventoryShow from "../../components/bierwart/InventoryShow.tsx";
 import {SlMagnifier} from "react-icons/sl";
 import {FaRegFilePdf} from "react-icons/fa6";
 
